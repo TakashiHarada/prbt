@@ -2,8 +2,8 @@
 
 #include <rbt.hpp>
 
-template <class Trie>
-void makePointedRunBasedTrie(vector<Trie>*& rbt, vector<Trie>* prbt, list<Rule>*& rulelist)
+template <class T>
+void makePointedRunBasedTrie(vector<T>*& rbt, vector<T>* prbt, list<Rule>*& rulelist)
 {
 	;
 }
@@ -757,26 +757,26 @@ void makeMatchRunSetTrie(vector<RBT>*& rbt, vector<MR>* mr)
 }
 */
 
-template <class Trie>
-void traverseAndMakeRBTNode(Trie *rbt, Run run)
+template <class T>
+void traverseAndMakeRBTNode(T *rbt, Run run)
 {
 	string bitString = run.getBitString();
 	unsigned l = bitString.length();
 	unsigned tn = rbt->getTrieNumber();
 	unsigned i = 0;
-	RBT* ptr = rbt;
+	T* ptr = rbt;
 
 	while (i < l) {
 		if (bitString[i] == '0') {
 			if (NULL == ptr->getLeft()) {
-				RBT* lptr = new RBT('0', tn, bitString.substr(0,i+1));
+				T* lptr = new T('0', tn, bitString.substr(0,i+1));
 				ptr->setLeft(lptr);
 			}
 			ptr = ptr->getLeft();
 		}
 		else {
 			if (NULL == ptr->getRight()) {
-				RBT* rptr = new RBT('1', tn, bitString.substr(0,i+1));
+				T* rptr = new T('1', tn, bitString.substr(0,i+1));
 				ptr->setRight(rptr);
 			}
 			ptr = ptr->getRight();
@@ -829,20 +829,19 @@ list<RunPair>* cutOutRun(Rule rule)
 	return runPair;
 }
 
-template <class Trie>
-void createTheRBTRootNodes(vector<Trie>* rbt, unsigned w)
+template <class T>
+void createTheRBTRootNodes(vector<T>* rbt, unsigned w)
 {
 	/* create the root nodes not to rbt[w-1] but to rbt[w] */
-  rbt->push_back(RBT(' ', 0, " "));
+  rbt->push_back(T(' ', 0, " "));
 	unsigned i = 1;
 	while (i <= w) {
-		rbt->push_back(RBT('p', i, "p"));
+		rbt->push_back(T('p', i, "p"));
 		++i;
 	}
 }
-
-template <class Trie>
-void makeRunBasedTrie(list<Rule>*& rulelist, vector<Trie> *rbt)
+template <class T>
+void makeRunBasedTrie(list<Rule>*& rulelist, vector<T> *rbt)
 {
 	list<Rule>::iterator ruleIt = rulelist->begin();
 	list<Rule>::iterator ruleItEnd = rulelist->end();
@@ -861,11 +860,12 @@ void makeRunBasedTrie(list<Rule>*& rulelist, vector<Trie> *rbt)
 		++ruleIt;
 	}
 }
+template void makeRunBasedTrie(list<Rule>*&, vector<RBT> *);
 
 /* following codes are for debug */
 
-template <class Trie>
-void postTraverse(Trie *rbt)
+template <class T>
+void postTraverse(T *rbt)
 {
 	if (NULL == rbt) { return ; }
 	postTraverse(rbt->getLeft());

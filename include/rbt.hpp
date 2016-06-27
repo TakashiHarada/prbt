@@ -444,11 +444,11 @@ void copyRBTtoMRT(vector<RBT>*&, vector<MR>*);
 void createTheMRTRootNodes(vector<MR>*, unsigned);
 void makeMatchRunSetTrie(vector<RBT>*&, vector<MR>*);
 */
-template <class Trie> void traverseAndMakeRBTNode(Trie*, Run);
+template <class T> void traverseAndMakeRBTNode(T*, Run);
 list<RunPair>* cutOutRun(Rule);
-template void createTheRBTRootNodes(vector<Trie>*, unsigned);
-template <class Trie> void makeRunBasedTrie(list<Rule>*&, vector<Trie> *);
-template <class Trie> void postTraverse(Trie*);
+template <class T> void createTheRBTRootNodes(vector<T>*, unsigned);
+template <class T> void makeRunBasedTrie(list<Rule>*&, vector<T> *);
+template <class T> void postTraverse(T*);
 //void postTraverse(MR*);
 //void showChild(Dtree *);
 

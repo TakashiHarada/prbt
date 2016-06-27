@@ -17,9 +17,9 @@ CPPFLAGS = -I include
 CXX = g++ -g3 -Wall -Wextra -pedantic -std=c++0x -lm 
 #CXX = g++-4.9 -g3 -Wall -Wextra -pedantic -std=c++0x -lm  # g はデバッグ用
 
-rbtrie: main.o openfile.o classify.o rbt.o
+rbtrie: rbt.o main.o openfile.o classify.o
 #rbtrie: rbtrie.o openfile.o trie.o classify.o check.o measure.o
-	g++ main.o openfile.o classify.o rbt.o -o main
+	g++ rbt.o main.o openfile.o classify.o -o main
 #g++ main.o openfile.o trie.o ptrie.o family.o dtree.o classify.o check.o measure.o -o main
 
 clean:

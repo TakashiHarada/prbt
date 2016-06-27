@@ -40,8 +40,9 @@ int main(int argc, char* argv[])
 
 	/* make a Run-Based Trie */
 	vector<RBT>* rbt = new vector<RBT>;
-	makeRunBasedTrie(rulelist,rbt);
+	//makeRunBasedTrie(rulelist,rbt);
 
+	/*
 	{
 		vector<RBT>::iterator it, end;
 		it = rbt->begin(), end = rbt->end();
@@ -53,6 +54,7 @@ int main(int argc, char* argv[])
 			++it;
 		}
 	}
+	*/
 
 	/* do the simple search */
 	list<Result>* resultOfSimpleSearch = new list<Result>;
@@ -64,7 +66,7 @@ int main(int argc, char* argv[])
 
 	/* make a Pointed Run-Based Trie */
 	vector<PRBT>* prbt = new vector<PRBT>;
-	makePointedRunBasedTrie(rbt, prbt, rulelist);
+	//makePointedRunBasedTrie(rbt, prbt, rulelist);
 
 	//assert(0 == checkClassifyResult(resultOfSequential, results));
 
@@ -72,6 +74,7 @@ int main(int argc, char* argv[])
 	delete rulelist;
 	delete packets;
 	delete rbt;
+	delete prbt;
 	delete resultOfSequential;
 	delete resultOfSimpleSearch;
 
