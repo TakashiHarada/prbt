@@ -12,18 +12,31 @@ int main(int argc, char** argv)
 
 	/* read rule-list and header-list files */
 	char** rulelist;
-	if (read_rulelist(argv[1], rulelist) == false) {
-		fprintf(stderr, "Can't read a rule-list file\n");
+	if ((rulelist = read_rule_list(argv[1])) == NULL) {
+		fprintf(stderr, "Can't read an input rule-list file\n");
 		exit(1);
 	}
-	
-	{
-		int i;
-		for (i = 0; i < 100; ++i) {
-			printf("%s\n", rulelist[i]);
+
+	char** headerlist;
+	if ((headerlist = read_header_list(argv[2])) == NULL) {
+		fprintf(stderr, "Can't read an input header-list file\n");
+		exit(1);
+	}
+
+	{	unsigned i;
+		for (i = 0; i < _n; ++i) {
+			// printf("%s\n",rulelist[i]);
 			free(rulelist[i]);
 		}
 	}
-
+	{	unsigned i;
+		for (i = 0; i < _hn; ++i) {
+			// printf("%s\n", headerlist[i]);
+			free(headerlist[i]);
+		}
+	}
+	free(rulelist);
+	free(headerlist);
+	
 	return 0;
 }

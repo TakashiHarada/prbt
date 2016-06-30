@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 
 	/* make a Pointed Run-Based Trie */
 	vector<PRBT>* prbt = new vector<PRBT>;
-	//makePointedRunBasedTrie(rbt, prbt, rulelist);
+	makePointedRunBasedTrie(rbt, prbt, rulelist);
 
 	//assert(0 == checkClassifyResult(resultOfSequential, results));
 

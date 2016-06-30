@@ -786,6 +786,8 @@ void traverseAndMakeRBTNode(T *rbt, Run run)
 
 	ptr->setRun(run);
 }
+template void traverseAndMakeRBTNode(RBT *rbt, Run run);
+template void traverseAndMakeRBTNode(PRBT *rbt, Run run);
 
 list<RunPair>* cutOutRun(Rule rule)
 {
@@ -840,6 +842,8 @@ void createTheRBTRootNodes(vector<T>* rbt, unsigned w)
 		++i;
 	}
 }
+
+
 template <class T>
 void makeRunBasedTrie(list<Rule>*& rulelist, vector<T> *rbt)
 {
@@ -861,6 +865,7 @@ void makeRunBasedTrie(list<Rule>*& rulelist, vector<T> *rbt)
 	}
 }
 template void makeRunBasedTrie(list<Rule>*&, vector<RBT> *);
+template void makeRunBasedTrie(list<Rule>*&, vector<PRBT> *);
 
 /* following codes are for debug */
 
