@@ -6,8 +6,8 @@ CPPFLAGS = -I include
 CC = gcc -g3 -Wall -Wextra -lm
 
 #rbtrie: rbtrie.o openfile.o trie.o family.o decision_tree.o classify.o
-rbtrie: main.o io.o
-	gcc main.o io.o -o main
+main: main.o io.o classify.o
+	gcc main.o io.o classify.o -o main
 
 clean:
 	rm *.o

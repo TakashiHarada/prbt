@@ -1,13 +1,11 @@
 /* io.c */
 
-#include <const.h>
-#include <tools.h>
 #include <io.h>
 
 char** read_header_list(char* header_file_name)
 {
 	FILE* fp;
-	if ((fp = fopen(header_file_name,"r")) == NULL) { fclose(fp); return false; }
+	if ((fp = fopen(header_file_name,"r")) == NULL) { return NULL; }
 
 	/* get the number of rules (n) in an input rule-list and the length (w) of the rule */
 	char* line = NULL;
@@ -21,7 +19,7 @@ char** read_header_list(char* header_file_name)
 	}
 	//printf("n = %d\n", n);
 	if (_w != w) {
-		fprintf(stderr, "rule length not equals to header length\n");
+		fprintf(stderr, "Rule length not equals to header length.\nCheck the input rule list file and header liest file.\n");
 		exit(1);
 	}
 
@@ -46,7 +44,7 @@ char** read_header_list(char* header_file_name)
 char** read_rule_list(char* rule_file_name)
 {
 	FILE* fp;
-	if ((fp = fopen(rule_file_name,"r")) == NULL) { fclose(fp); return false; }
+	if ((fp = fopen(rule_file_name,"r")) == NULL) { return NULL; }
 
 	/* get the number of rules (n) in an input rule-list and the length (w) of the rule */
 	char* line = NULL;

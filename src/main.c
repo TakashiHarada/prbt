@@ -14,6 +14,7 @@ int main(int argc, char** argv)
 	char** rulelist;
 	if ((rulelist = read_rule_list(argv[1])) == NULL) {
 		fprintf(stderr, "Can't read an input rule-list file\n");
+		return 1;
 		exit(1);
 	}
 
@@ -22,6 +23,7 @@ int main(int argc, char** argv)
 		fprintf(stderr, "Can't read an input header-list file\n");
 		exit(1);
 	}
+	do_sequential_search(rulelist, headerlist);
 
 	{	unsigned i;
 		for (i = 0; i < _n; ++i) {
