@@ -15,6 +15,10 @@
 #include <io.h>
 #endif
 
+#ifndef __PRBT_RBT_H__
+#include <rbt.h>
+#endif
+
 #ifndef __PRBT_CLASSIFY_H__
 #include <classify.h>
 #endif

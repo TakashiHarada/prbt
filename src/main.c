@@ -23,7 +23,13 @@ int main(int argc, char** argv)
 		fprintf(stderr, "Can't read an input header-list file\n");
 		exit(1);
 	}
+
+	/* make a Run-Based Trie */
+	rbt** T = make_Run_Based_Trie(rulelist);
+
+	/* classify headers via a kind of methods */
 	do_sequential_search(rulelist, headerlist);
+
 
 	{	unsigned i;
 		for (i = 0; i < _n; ++i) {
@@ -39,6 +45,12 @@ int main(int argc, char** argv)
 	}
 	free(rulelist);
 	free(headerlist);
+
+	{	unsigned i;
+		for (i = 0; i < _w; ++i)
+			free(T[i]);
+	}
+	free(T);
 	
 	return 0;
 }
