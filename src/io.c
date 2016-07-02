@@ -29,8 +29,9 @@ char** read_header_list(char* header_file_name)
 	{
 		unsigned i = 0;
 		while ((read = getline(&line, &len, fp)) != -1) {
-			headerlist[i] = (char*)malloc(_w*sizeof(char));
+			headerlist[i] = (char*)malloc((_w+1)*sizeof(char));
 			strncpy(headerlist[i], line, _w);
+			headerlist[i][_w] = '\0';
 			++i;
 		}
 	}
@@ -65,8 +66,9 @@ char** read_rule_list(char* rule_file_name)
 	{
 		unsigned i = 0;
 		while ((read = getline(&line, &len, fp)) != -1) {
-			rulelist[i] = (char*)malloc(w*sizeof(char));
+			rulelist[i] = (char*)malloc((w+1)*sizeof(char));
 			strncpy(rulelist[i], line, w);
+			rulelist[i][w] = '\0';
 			++i;
 		}
 	}

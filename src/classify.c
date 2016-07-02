@@ -20,13 +20,14 @@ void sequential_search(char** rulelist, char* header)
 			break;
 		}
 
-	char defaultrule[_w];
+	char defaultrule[_w+1];
 	unsigned j;
 	for (j = 0; j < _w; ++j)
 		defaultrule[j] = '*';
+	defaultrule[_w] = '\0';
 
 	if (i != _n)
-		printf("%s -> rule[%2d] %s \n", header, i+1, rulelist[i]);
+		printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
 	else
 		printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
 }
