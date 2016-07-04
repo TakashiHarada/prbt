@@ -21,6 +21,7 @@ typedef struct run {
 	char* run;
 	unsigned rule_num;
 	unsigned run_num;
+	unsigned trie_number;
 	bool terminal;
 } run;
 
@@ -41,6 +42,8 @@ struct rbt_node {
 typedef struct rbt_node rbt;
 
 runlist* add_run_to_RBT_node(runlist*, runlist*, run);
+void add_terminal_mark(runlist*);
+runlist* add_run(runlist*, char*, unsigned, unsigned);
 runlist* cut_run(char*);
 rbt* make_RBT_node(char);
 rbt** make_Run_Based_Trie(char**);
