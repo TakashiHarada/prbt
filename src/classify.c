@@ -27,9 +27,9 @@ void sequential_search(char** rulelist, char* header)
 	defaultrule[_w] = '\0';
 
 	if (i != _n)
-		printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
+		; //printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
 	else
-		printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
+		; //printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
 }
 
 void do_sequential_search(char** rulelist, char** headerlist)
