@@ -56,7 +56,8 @@ runlist* cut_run(char* rule)
 		int s = -1, t = -1;
 		unsigned run_counter = 0;
 		bool sign = false;
-		printf("%s : ", rule);
+		char* buf = (char*)malloc((_w+1)*sizeof(char));
+		//printf("%s : ", rule);
 		for (i = 0; i < _w; ++i) {
 			if ('*' != rule[i]) {
 			 if (!sign) {
@@ -64,18 +65,22 @@ runlist* cut_run(char* rule)
 				 ++run_counter;
 				 sign = true;
 			 }
-			 putchar(rule[i]);
 			}
 			else if (sign) {
 				t = i;
-				printf(" (%d-%d, %d)",s,t, run_counter);
-				putchar(' ');
+				strncpy(buf, rule+s-1, t-s+1);
+				buf[t-s+1] = '\0';
+				//printf("%s ", buf);
 				sign = false;
 			}
 		}
-		if (sign)
-			printf(" (%d-%d, %d)",s,_w, run_counter);
-		putchar('\n');
+		if (sign) {
+			strncpy(buf, rule+s-1, _w-s+1);
+			buf[_w-s+1] = '\0';
+			//printf("%s ", buf);
+		}
+		//putchar('\n');
+		free(buf);
 	}
 	return rs;
 }
