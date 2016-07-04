@@ -34,14 +34,15 @@ typedef struct rl runlist;
 
 struct rbt_node {
 	char bit;
-	runlist* head;
-	runlist* tail;
+	runlist* rs;
+	//runlist* tail;
 	struct rbt_node* left;
 	struct rbt_node* right;
 };
 typedef struct rbt_node rbt;
 
-runlist* add_run_to_RBT_node(runlist*, runlist*, run);
+//runlist* add_run_to_RBT_node(runlist*, runlist*, run);
+runlist* add_run_to_RBT_node(runlist*, run);
 void traverse_and_make_RBT_node(rbt*, run);
 void add_terminal_mark(runlist*);
 runlist* add_run(runlist*, char*, unsigned, unsigned);
@@ -49,4 +50,5 @@ runlist* cut_run(char*);
 rbt* make_RBT_node(char);
 rbt** make_Run_Based_Trie(char**);
 
+void free_RBT(rbt**);
 #endif

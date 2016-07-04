@@ -50,6 +50,7 @@ int main(int argc, char** argv)
 		for (i = 0; i < _w; ++i)
 			free(T[i]);
 	}
+	free_RBT(T);
 	free(T);
 	
 	return 0;
