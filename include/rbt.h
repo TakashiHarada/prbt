@@ -42,6 +42,7 @@ struct rbt_node {
 typedef struct rbt_node rbt;
 
 runlist* add_run_to_RBT_node(runlist*, runlist*, run);
+void traverse_and_make_RBT_node(rbt*, run);
 void add_terminal_mark(runlist*);
 runlist* add_run(runlist*, char*, unsigned, unsigned);
 runlist* cut_run(char*);

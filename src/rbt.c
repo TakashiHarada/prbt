@@ -45,6 +45,30 @@ rbt* make_RBT_node(char b)
 	return node;
 }
 
+void traverse_and_make_RBT_node(rbt* T, run r)
+{
+	char* bit_string = (char*)malloc((_w+1)*sizeof(char));
+	strcpy(bit_string, r.run);
+	bit_string[_w] = '\0';
+	unsigned i = 0;
+	rbt* ptr = T;
+
+	while ('\0' != bit_string[i]) {
+		if ('0' == bit_string[i]) {
+			if (NULL == ptr->left) {
+				rbt* lptr = (rbt*)malloc(sizeof(rbt));
+			}
+			ptr = ptr->left;
+		} 
+		else {
+			;
+		}
+		++i;
+	}
+
+	free(bit_string);
+}
+
 void add_rule_number(runlist* rs, unsigned i)
 {
 	if (NULL == rs) { return ; }
@@ -143,16 +167,13 @@ rbt** make_Run_Based_Trie(char** rulelist)
 			strcpy(copy,rulelist[i]);
 			runlist* runs = cut_run(copy);
 			add_rule_number(runs, i+1);
-			// debug
 			runlist* ptr = runs;
 			while (ptr != NULL) {
-				printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
+				//printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
+				traverse_and_make_RBT_node(T[i], ptr->run);
 				ptr = ptr->next;
 			}
-			putchar('\n');
-			// debug
-			/* add run */
-			//printf("R[%2d] = %s: %s\n", i+1, copy, rulelist[i]); 
+			//putchar('\n');
 			free_runlist(runs);
 		}
 	}
