@@ -16,23 +16,7 @@ void free_runlist(runlist* rl)
 
 runlist* add_run_to_RBT_node(runlist *head, runlist* tail, run r)
 {
-	runlist* ptr = (runlist*)malloc(sizeof(runlist));
-	strcpy(ptr->run.run, r.run);
-	ptr->run.rule_num = r.rule_num;
-	ptr->run.run_num = r.run_num;
-	ptr->run.trie_number = r.trie_number;
-	ptr->next = NULL;
-
-	if (NULL == tail) {
-		ptr->prev = NULL;
-		head = tail = ptr;
-	}
-	else {
-		ptr->prev = tail;
-		tail = ptr;
-	}
-
-	return tail;
+	return head;
 }
 
 rbt* make_RBT_node(char b)
@@ -47,24 +31,29 @@ rbt* make_RBT_node(char b)
 
 void traverse_and_make_RBT_node(rbt* T, run r)
 {
-	char* bit_string = (char*)malloc((_w+1)*sizeof(char));
+	unsigned l = strlen(r.run);
+	char* bit_string = (char*)malloc((l+1)*sizeof(char));
 	strcpy(bit_string, r.run);
-	bit_string[_w] = '\0';
+	bit_string[l] = '\0';
 	unsigned i = 0;
 	rbt* ptr = T;
 
 	while ('\0' != bit_string[i]) {
-		if ('0' == bit_string[i]) {
+		if ('0' == r.run[i]) {
 			if (NULL == ptr->left) {
-				rbt* lptr = (rbt*)malloc(sizeof(rbt));
+				ptr->left = make_RBT_node('0');
 			}
 			ptr = ptr->left;
 		} 
 		else {
-			;
+			if (NULL == ptr->right) {
+				ptr->right = make_RBT_node('1');
+			}
+			ptr = ptr->right;
 		}
 		++i;
 	}
+	ptr->head = add_run_to_RBT_node(ptr->head, ptr->tail, r);
 
 	free(bit_string);
 }
@@ -170,7 +159,7 @@ rbt** make_Run_Based_Trie(char** rulelist)
 			runlist* ptr = runs;
 			while (ptr != NULL) {
 				//printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
-				traverse_and_make_RBT_node(T[i], ptr->run);
+				traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
 				ptr = ptr->next;
 			}
 			//putchar('\n');
