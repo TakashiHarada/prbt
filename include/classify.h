@@ -23,8 +23,8 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-void Simple_Search(rbt**, char*);
-void do_Simple_Search(rbt**, char**);
+void simple_search(rbt**, char*);
+void do_simple_search(rbt**, char**);
 void sequential_search(char **, char*);
 void do_sequential_search(char **, char**);
 
