@@ -15,10 +15,16 @@
 #include <io.h>
 #endif
 
+#ifndef __PRBT_RBT_H__
+#include <rbt.h>
+#endif
+
 #include <time.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 
+void Simple_Search(rbt**, char*);
+void do_Simple_Search(rbt**, char**);
 void sequential_search(char **, char*);
 void do_sequential_search(char **, char**);
 

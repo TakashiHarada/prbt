@@ -29,6 +29,7 @@ int main(int argc, char** argv)
 
 	/* classify headers via a kind of methods */
 	do_sequential_search(rulelist, headerlist);
+	do_Simple_Search(T, headerlist);
 
 
 	{	unsigned i;
@@ -46,10 +47,12 @@ int main(int argc, char** argv)
 	free(rulelist);
 	free(headerlist);
 
+	/*
 	{	unsigned i;
 		for (i = 0; i < _w; ++i)
 			free(T[i]);
 	}
+	*/
 	free_RBT(T);
 	free(T);
 	

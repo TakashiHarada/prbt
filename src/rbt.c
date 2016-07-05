@@ -203,6 +203,7 @@ void free_traverse_RBT(rbt* T)
 		runlist* ptr = T->rs;
 		runlist* ptr2;
 		while (NULL != ptr) {
+			//printf("free run (%4s, %2d, %d)\n", ptr->run.run, ptr->run.rule_num, ptr->run.run_num);
 			ptr2 = ptr;
 			ptr = ptr->next;
 			free(ptr2);

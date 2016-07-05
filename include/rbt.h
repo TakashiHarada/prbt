@@ -35,7 +35,6 @@ typedef struct rl runlist;
 struct rbt_node {
 	char bit;
 	runlist* rs;
-	//runlist* tail;
 	struct rbt_node* left;
 	struct rbt_node* right;
 };
