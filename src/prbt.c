@@ -4,7 +4,14 @@
 
 void low_trie_traverse(prbt* low, prbt** PT)
 {
-	printf("%c, %s\n", low->bit, low->label);
+	unsigned l = strlen(low->label);
+	char* bit_string = (char*)malloc((l+1)*sizeof(char));
+	strcpy(bit_string, low->label);
+	bit_string[l] = '\0';
+
+	//printf("%d | %c | %s\n", low->trie_number, low->bit, bit_string);
+
+	free(bit_string);
 }
 
 void lower_trie_traverse_via_label_of_runs_on_higher_trie(prbt* low, prbt** PT)
@@ -26,6 +33,7 @@ void make_pointer_from_PTi_to_PTj(prbt* pi, prbt* pj)
 void traverse_and_make_backbone_PRBT(prbt* PT, run r)
 {
 	unsigned l = strlen(r.run);
+	unsigned k = r.trie_number-1;  // trie_number starts from 0 not 1 
 	char* buf = (char*)malloc((l+1)*sizeof(char));
 	char* bit_string = (char*)malloc((l+1)*sizeof(char));
 	strcpy(bit_string, r.run);
@@ -36,18 +44,18 @@ void traverse_and_make_backbone_PRBT(prbt* PT, run r)
 	for (i = 0; '\0' != bit_string[i]; ++i) {
 		if ('0' == r.run[i]) {
 			if (NULL == ptr->left)  {
-				strncpy(buf, bit_string, i+1);
+				strncpy(buf, bit_string, i+1); // cut a label 
 				buf[i+1] = '\0';
-				ptr->left = make_PRBT_node('0', buf);
+				ptr->left = make_PRBT_node('0', buf, k);
 			}
 			ptr->pleft = ptr->left;
 			ptr = ptr->left;
 		}
 		else {
 			if (NULL == ptr->right) {
-				strncpy(buf, bit_string, i+1);
+				strncpy(buf, bit_string, i+1); // cut a label
 				buf[i+1] = '\0';
-				ptr->right = make_PRBT_node('1', buf);
+				ptr->right = make_PRBT_node('1', buf, k);
 			}
 			ptr->pright = ptr->right;
 			ptr = ptr->right;
@@ -59,19 +67,21 @@ void traverse_and_make_backbone_PRBT(prbt* PT, run r)
 	free(buf);
 }
 
-prbt* make_PRBT_node(char b, char* str)
+prbt* make_PRBT_node(char b, char* str, unsigned tn)
 {
 	prbt* node = (prbt*)malloc(sizeof(prbt));
 	node->bit = b;
+	node->left = NULL;
+	node->pright = NULL;
+	node->rs = NULL;
+
+	node->right = NULL;
+	node->pleft = NULL;
+	node->trie_number = tn;
 	unsigned l = strlen(str);
 	node->label = (char*)malloc((l+1)*sizeof(char));
 	strcpy(node->label, str);
 	(node->label)[l] = '\0';
-	node->left = NULL;
-	node->right = NULL;
-	node->pleft = NULL;
-	node->pright = NULL;
-	node->rs = NULL;
 
 	return node;
 }
@@ -83,7 +93,7 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
 	 * Caution! Pointed Run-Based Trie PT[i] starts from PT[0] not PT[1] */
 	{	unsigned i;
 		for (i = 0; i < _w; ++i) {
-			PT[i] = make_PRBT_node('_', "root");
+			PT[i] = make_PRBT_node('_', "root", i);
 		}
 	}
 
@@ -116,9 +126,10 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
 		}
 
 		prbt* low_trie;
-		for (i = _w-1; i > 0; --i) {
+		for (i = _w-1; ; --i) {
 			low_trie = PT[i];
 			lower_trie_traverse_via_label_of_runs_on_higher_trie(low_trie, PT);
+			if (i == 0) { break; }
 		}
 	}
 

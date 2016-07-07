@@ -21,12 +21,14 @@
 
 struct prbt_node {
 	char bit;
-	char* label;
 	runlist* rs;
 	struct prbt_node* left;
 	struct prbt_node* right;
-	struct prbt_node* pleft;  // for Pointed Run-Based Trie Search
-	struct prbt_node* pright; // for Pointed Run-Based Trie Search
+	/* following are for Pointed Run-Based Trie Search */
+	char* label; 
+	unsigned trie_number;
+	struct prbt_node* pleft;
+	struct prbt_node* pright;
 };
 typedef struct prbt_node prbt;
 
@@ -34,7 +36,7 @@ unsigned _number_of_prbt;
 
 void lower_trie_traverse_via_label_of_runs_on_higer_trie(prbt*, prbt**);
 void traverse_and_make_backbone_PRBT(prbt*, run);
-prbt* make_PRBT_node(char, char*);
+prbt* make_PRBT_node(char, char*, unsigned);
 prbt** make_Pointed_Run_Based_Trie(char**);
 void free_PRBT(prbt**);
 
