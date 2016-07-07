@@ -14,7 +14,6 @@ void free_runlist(runlist* rl)
 	}
 }
 
-//runlist* add_run_to_RBT_node(runlist *head, runlist* tail, run r)
 runlist* add_run_to_RBT_node(runlist *rs, run r)
 {
 	//printf("%s ", run_str);

@@ -2,6 +2,20 @@
 
 #include <prbt.h>
 
+void set_pointer(prbt* high, prbt* low)
+{
+	if (NULL == high->left) { high->pleft = low->pleft; }
+	if (NULL == high->right) { high->pright = low->pright; }
+}
+
+void add_runs_of_low_trie_to_high_trie_node(prbt* high, prbt* low)
+{
+	runlist* ptr = low->rs;
+	while (NULL != ptr) {
+		ptr = ptr->next;
+	}
+}
+
 void low_trie_traverse(prbt* high, prbt** PT)
 {
 	unsigned len = strlen(high->label);
@@ -19,8 +33,8 @@ void low_trie_traverse(prbt* high, prbt** PT)
 				else { break; }
 			}
 			if (l == len) {
-				if (NULL == high->left || NULL == high->right) { ; }
-				if (NULL != low->rs) { ; }
+				if (NULL == high->pleft || NULL == high->pright) { set_pointer(high, low); }
+				if (NULL != low->rs) { add_runs_of_low_trie_to_high_trie_node(high, low); }
 				break;
 			}
 		}
