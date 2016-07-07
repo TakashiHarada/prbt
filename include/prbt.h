@@ -34,7 +34,7 @@ typedef struct prbt_node prbt;
 
 unsigned _number_of_prbt;
 
-void add_runs_of_low_trie_to_high_trie_node(prbt*, prbt*);
+void copy_run(runlist*, runlist*);
 void low_trie_traverse(prbt*, prbt**);
 void lower_trie_traverse_via_label_of_runs_on_higer_trie(prbt*, prbt**);
 void traverse_and_make_backbone_PRBT(prbt*, run);

@@ -108,7 +108,7 @@ runlist* add_run(runlist* rs, char* run_str, unsigned run_num, unsigned tn)
 	new->run.run_num = run_num;
 	new->run.trie_number = tn;
 	new->run.terminal = false;
-	new->prev = new -> next = NULL;
+	new->prev = new->next = NULL;
 
 	runlist* ptr = rs;
 	if (NULL == rs) { 

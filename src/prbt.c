@@ -8,10 +8,30 @@ void set_pointer(prbt* high, prbt* low)
 	if (NULL == high->right) { high->pright = low->pright; }
 }
 
-void add_runs_of_low_trie_to_high_trie_node(prbt* high, prbt* low)
+void copy_run(runlist* r1, runlist* r2)
 {
-	runlist* ptr = low->rs;
+	runlist* ptr = r2;
+	runlist* wptr = r1;
+	unsigned l;
+	runlist* new;
 	while (NULL != ptr) {
+		l = strlen(ptr->run.run) + 1;
+		new = (runlist*)malloc(sizeof(runlist));
+		new->run.run = (char*)malloc(l*sizeof(char));
+		strcpy(new->run.run, ptr->run.run);
+		new->run.run[_w] = '\0';
+		new->run.rule_num = ptr->run.rule_num;
+		new->run.run_num = ptr->run.run_num;
+		new->run.trie_number = ptr->run.trie_number;
+		new->prev = new->next = NULL;
+
+		if (NULL == wptr) {
+			wptr = new;
+		}
+		while (NULL != wptr->next) { wptr = wptr->next; }
+		wptr->next = new;
+		new->prev = wptr;
+
 		ptr = ptr->next;
 	}
 }
@@ -23,7 +43,7 @@ void low_trie_traverse(prbt* high, prbt** PT)
 	strcpy(bit_string, high->label);
 	bit_string[len] = '\0';
 
-	{ unsigned i, l, j = 0;
+	{ unsigned i, l, j = 1;
 		prbt* low;
 		for (i = high->trie_number; i < _w-1; ++i) {
 			low = PT[i+1];
@@ -33,13 +53,14 @@ void low_trie_traverse(prbt* high, prbt** PT)
 				else { break; }
 			}
 			if (l == len) {
+				/* set pointer for classify */
 				if (NULL == high->pleft || NULL == high->pright) { set_pointer(high, low); }
-				if (NULL != low->rs) { add_runs_of_low_trie_to_high_trie_node(high, low); }
+				/* set run for classify */
+				if (NULL != low->rs) { copy_run(high->rs, low->rs); }
 				break;
 			}
 		}
 	}
-	//printf("%d | %c | %s\n", low->trie_number, low->bit, bit_string);
 
 	free(bit_string);
 }
