@@ -27,12 +27,16 @@ int main(int argc, char** argv)
 	/* make a Run-Based Trie */
 	rbt** T = make_Run_Based_Trie(rulelist);
 
+	/* make a Run-Based Trie */
+	prbt** PT = make_Pointed_Run_Based_Trie(rulelist);
+
 	/* classify headers via a kind of methods */
 	do_sequential_search(rulelist, headerlist);
 	putchar('\n');
 	do_simple_search(T, headerlist);
 
 
+	/* from here ========== freeing memories ========== */ 
 	{	unsigned i;
 		for (i = 0; i < _n; ++i) {
 			// printf("%s\n",rulelist[i]);
@@ -48,14 +52,11 @@ int main(int argc, char** argv)
 	free(rulelist);
 	free(headerlist);
 
-	/*
-	{	unsigned i;
-		for (i = 0; i < _w; ++i)
-			free(T[i]);
-	}
-	*/
 	free_RBT(T);
 	free(T);
+	free_PRBT(PT);
+	free(PT);
+	/* ========== freeing memories ========== ----> to here*/ 
 	
 	return 0;
 }

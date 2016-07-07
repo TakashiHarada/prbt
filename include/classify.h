@@ -19,6 +19,10 @@
 #include <rbt.h>
 #endif
 
+#ifndef __PRBT_PRBT_H__
+#include <prbt.h>
+#endif
+
 #include <time.h>
 #include <sys/time.h>
 #include <sys/resource.h>

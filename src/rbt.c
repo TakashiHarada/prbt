@@ -57,23 +57,20 @@ void traverse_and_make_RBT_node(rbt* T, run r)
 	char* bit_string = (char*)malloc((l+1)*sizeof(char));
 	strcpy(bit_string, r.run);
 	bit_string[l] = '\0';
-	unsigned i = 0;
+	unsigned i;
 	rbt* ptr = T;
 
-	while ('\0' != bit_string[i]) {
+	for (i = 0; '\0' != bit_string[i]; ++i) {
 		if ('0' == r.run[i]) {
-			if (NULL == ptr->left) {
+			if (NULL == ptr->left)
 				ptr->left = make_RBT_node('0');
-			}
 			ptr = ptr->left;
 		} 
 		else {
-			if (NULL == ptr->right) {
+			if (NULL == ptr->right)
 				ptr->right = make_RBT_node('1');
-			}
 			ptr = ptr->right;
 		}
-		++i;
 	}
 	//ptr->head = add_run_to_RBT_node(ptr->head, ptr->tail, r);
 	ptr->rs = add_run_to_RBT_node(ptr->rs, r);
@@ -209,6 +206,11 @@ void free_traverse_RBT(rbt* T)
 			free(ptr2);
 		}
 	}
+
+	if (NULL != T->left)
+		free(T->left);
+	if (NULL != T->right)
+		free(T->right);
 }
 
 void free_RBT(rbt** T)

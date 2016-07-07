@@ -27,16 +27,20 @@ void sequential_search(char** rulelist, char* header)
   defaultrule[_w] = '\0';
 
   if (i != _n)
-    printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
+    //printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
+    printf("%s --> %2d\n", header, i+1);
   else
-    printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
+    //printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
+    printf("%s --> %2d\n", header, i+1);
 }
 
 void do_sequential_search(char** rulelist, char** headerlist)
 {
+	printf("=============== Sequential Search =============== \n");
   unsigned i;
   for (i = 0; i < _hn; ++i)
     sequential_search(rulelist, headerlist[i]);
+	printf("================================================= \n");
 }
 
 void simple_search(rbt** T, char* header)
@@ -50,36 +54,34 @@ void simple_search(rbt** T, char* header)
     for (k = 0; '\0' != header[k]; ++k) {
       ptr = T[k];
       for (i = k; i < _w; ++i) {
-				if ('0' == header[i]) {
-	  			if (NULL != ptr->left) { ptr = ptr->left; }
-	  			else { break; }
-				}
-				else {
-	  			if (NULL != ptr->right) { ptr = ptr->right; }
-	  			else { break; }
-				}
-				if (NULL != ptr->rs) {
-	  			for (it = ptr->rs; NULL != it; it = it->next) {
-	    			if (A[it->run.rule_num] == it->run.run_num-1) {
-		      		++A[it->run.rule_num];
-		      		if (it->run.terminal) {
-								if (it->run.rule_num < priority) { priority = it->run.rule_num; }
-							}
-	    			}
-	  			}
-      	}
-   		}
-  	}
+	if ('0' == header[i]) {
+	  if (NULL != ptr->left) { ptr = ptr->left; }
+	  else { break; }
 	}
- 	printf("%s --> %2d\n", header, priority);
+	else {
+	  if (NULL != ptr->right) { ptr = ptr->right; }
+	  else { break; }
+	}
+	if (NULL != ptr->rs)
+	  for (it = ptr->rs; NULL != it; it = it->next)
+	    if (A[it->run.rule_num] == it->run.run_num-1) {
+	      ++A[it->run.rule_num];
+	      if (it->run.terminal)
+		if (it->run.rule_num < priority) { priority = it->run.rule_num; }
+	    }
+      }
+    }
+  }
+  printf("%s --> %2d\n", header, priority);
 
- 	free(A);
+  free(A);
 }
 
 void do_simple_search(rbt** T, char** headerlist)
 {
+	printf("================= Simple Search ================= \n");
   unsigned i;
-  for (i = 0; i < _hn; ++i) {
+  for (i = 0; i < _hn; ++i)
     simple_search(T, headerlist[i]);
-	}
+	printf("================================================= \n");
 }
