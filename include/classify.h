@@ -27,6 +27,8 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+void pointer_search(prbt**, char*);
+void do_pointer_search(prbt**, char**);
 void simple_search(rbt**, char*);
 void do_simple_search(rbt**, char**);
 void sequential_search(char **, char*);

@@ -4,15 +4,17 @@
 
 void set_pointer(prbt* high, prbt* low)
 {
-	if (NULL == high->left) { high->pleft = low->pleft; }
-	if (NULL == high->right) { high->pright = low->pright; }
+	if (NULL == high->pleft) { high->pleft = low->pleft; }
+	if (NULL == high->pright) { high->pright = low->pright; }
 }
 
-void copy_run(runlist* r1, runlist* r2)
+runlist* copy_run(runlist* r1, runlist* r2)
 {
 	runlist* ptr = r2;
-	runlist* wptr = r1;
+	runlist* wptr = NULL;
+	bool flag = false;
 	unsigned l;
+	runlist* head;
 	runlist* new;
 	while (NULL != ptr) {
 		l = strlen(ptr->run.run) + 1;
@@ -25,15 +27,22 @@ void copy_run(runlist* r1, runlist* r2)
 		new->run.trie_number = ptr->run.trie_number;
 		new->prev = new->next = NULL;
 
-		if (NULL == wptr) {
-			wptr = new;
+		//printf("(%d %d)\n", new->run.rule_num, new->run.run_num);
+		if (!flag) { flag = true; wptr = head = new; }
+		else {
+			while (NULL != wptr->next) { wptr = wptr->next; }
+			wptr->next = new;
+			new->prev = wptr;
 		}
-		while (NULL != wptr->next) { wptr = wptr->next; }
-		wptr->next = new;
-		new->prev = wptr;
 
 		ptr = ptr->next;
 	}
+	if (NULL == r1) { return head; }
+	wptr = r1;
+	while (NULL != wptr->next) { wptr = wptr->next; }
+	wptr->next = head;
+
+	return r1;
 }
 
 void low_trie_traverse(prbt* high, prbt** PT)
@@ -43,9 +52,10 @@ void low_trie_traverse(prbt* high, prbt** PT)
 	strcpy(bit_string, high->label);
 	bit_string[len] = '\0';
 
+	//printf("%d %s\n", high->trie_number, high->label);
 	{ unsigned i, l, j = 1;
 		prbt* low;
-		for (i = high->trie_number; i < _w-1; ++i) {
+		for (i = high->trie_number; i < _w-1; ++i, ++j) {
 			low = PT[i+1];
 			for (l = j; l < len; ++l) {
 				if ('0' == bit_string[l] && NULL != low->left) { low = low->left; }
@@ -56,7 +66,7 @@ void low_trie_traverse(prbt* high, prbt** PT)
 				/* set pointer for classify */
 				if (NULL == high->pleft || NULL == high->pright) { set_pointer(high, low); }
 				/* set run for classify */
-				if (NULL != low->rs) { copy_run(high->rs, low->rs); }
+				if (NULL != low->rs) { high->rs = copy_run(high->rs, low->rs); }
 				break;
 			}
 		}
@@ -65,20 +75,20 @@ void low_trie_traverse(prbt* high, prbt** PT)
 	free(bit_string);
 }
 
-void lower_trie_traverse_via_label_of_runs_on_higher_trie(prbt* low, prbt** PT)
+void lower_trie_traverse_via_label_of_runs_on_higher_trie(prbt* high, prbt** PT)
 {
-	if (NULL == low) { return; }
-	lower_trie_traverse_via_label_of_runs_on_higher_trie(low->left, PT);
-	lower_trie_traverse_via_label_of_runs_on_higher_trie(low->right, PT);
-	low_trie_traverse(low, PT);
+	if (NULL == high) { return; }
+	lower_trie_traverse_via_label_of_runs_on_higher_trie(high->left, PT);
+	lower_trie_traverse_via_label_of_runs_on_higher_trie(high->right, PT);
+	low_trie_traverse(high, PT);
 }
 
 void make_pointer_from_PTi_to_PTj(prbt* pi, prbt* pj)
 {
 	if (NULL == pi->left)
-		pi->left = pj;
+		pi->pleft = pj;
 	if (NULL == pi->right)
-		pi->right = pj;
+		pi->pright = pj;
 }
 
 void traverse_and_make_backbone_PRBT(prbt* PT, run r)
@@ -176,10 +186,10 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
 			make_pointer_from_PTi_to_PTj(pi, pj);   // PT_(j) means PT_(i+1)
 		}
 
-		prbt* low_trie;
+		prbt* high_trie;
 		for (i = _w-2; ; --i) { // start from PT[w-2]
-			low_trie = PT[i];
-			lower_trie_traverse_via_label_of_runs_on_higher_trie(low_trie, PT);
+			high_trie = PT[i];
+			lower_trie_traverse_via_label_of_runs_on_higher_trie(high_trie, PT);
 			if (i == 0) { break; }
 		}
 	}
@@ -212,8 +222,39 @@ void free_PRBT(prbt** PT)
 {
 	if (NULL == PT) { return; }
 
-	{ unsigned i;
-		for (i = 0; i < _w; ++i)
-			free_traverse_PRBT(PT[i]);
+	unsigned i;
+	for (i = 0; i < _w; ++i)
+		free_traverse_PRBT(PT[i]);
+}
+
+void traverse_PT(prbt* PT)
+{
+	if (NULL == PT) { return; }
+	traverse_PT(PT->left);
+	traverse_PT(PT->right);
+
+	printf("%s, ", PT->label);
+	runlist* ptr = PT->rs;
+	while (NULL != ptr) {
+		printf("(%d, %d) ", ptr->run.rule_num, ptr->run.run_num);
+		ptr = ptr->next;
+	}
+	if (NULL != PT->pleft)
+		printf("L--> (%d %s) ", PT->pleft->trie_number+1, PT->pleft->label);
+	else
+		printf("L--> NULL ");
+	if (NULL != PT->pright)
+		printf("R--> (%d %s) ", PT->pright->trie_number+1, PT->pright->label);
+	else
+		printf("R--> NULL ");
+	putchar('\n');
+}
+
+void traverse_PRBT(prbt** PT)
+{
+	unsigned i;
+	for (i = 0; i <_w; ++i) {
+		printf("========== %d ==========\n", i+1);
+		traverse_PT(PT[i]);
 	}
 }

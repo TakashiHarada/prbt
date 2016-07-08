@@ -27,14 +27,16 @@ int main(int argc, char** argv)
 	/* make a Run-Based Trie */
 	rbt** T = make_Run_Based_Trie(rulelist);
 
-	/* make a Run-Based Trie */
+	/* make a Pointed Run-Based Trie */
 	prbt** PT = make_Pointed_Run_Based_Trie(rulelist);
+	//traverse_PRBT(PT);
 
 	/* classify headers via a kind of methods */
 	do_sequential_search(rulelist, headerlist);
 	putchar('\n');
 	do_simple_search(T, headerlist);
-
+	putchar('\n');
+	do_pointer_search(PT, headerlist);
 
 	/* from here ========== freeing memories ========== */ 
 	{	unsigned i;

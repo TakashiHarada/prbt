@@ -76,12 +76,51 @@ void simple_search(rbt** T, char* header)
 
   free(A);
 }
-
 void do_simple_search(rbt** T, char** headerlist)
 {
 	printf("================= Simple Search ================= \n");
   unsigned i;
   for (i = 0; i < _hn; ++i)
     simple_search(T, headerlist[i]);
+	printf("================================================= \n");
+}
+
+void pointer_search(prbt** PT, char* header)
+{
+  unsigned* A = (unsigned*)calloc(_n+1, sizeof(unsigned));
+  prbt* ptr = PT[0];
+  unsigned priority = _n+1;
+  runlist* it;
+
+  { unsigned i;
+    for (i = 0; '\0' != header[i]; ++i) {
+			if ('0' == header[i]) {
+				if (NULL != ptr->pleft) { ptr = ptr->pleft; }
+				else { break; }
+			}
+			else {
+				if (NULL != ptr->pright) { ptr = ptr->pright; }
+				else { break; }
+			}
+			if (NULL != ptr->rs)
+				for (it = ptr->rs; NULL != it; it = it->next)
+					if (A[it->run.rule_num] == it->run.run_num-1) {
+						++A[it->run.rule_num];
+						if (it->run.terminal)
+							if (it->run.rule_num < priority) { priority = it->run.rule_num; }
+					}
+		}
+	}
+  printf("%s --> %2d\n", header, priority);
+
+  free(A);
+}
+
+void do_pointer_search(prbt** PT, char** headerlist)
+{
+	printf("============ Pointed Run-Based Search =========== \n");
+  unsigned i;
+  for (i = 0; i < _hn; ++i)
+    pointer_search(PT, headerlist[i]);
 	printf("================================================= \n");
 }
