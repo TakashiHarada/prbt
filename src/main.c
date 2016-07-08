@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
 	/* make a Pointed Run-Based Trie */
 	prbt** PT = make_Pointed_Run_Based_Trie(rulelist);
-	//traverse_PRBT(PT);
+	traverse_PRBT(PT);
 
 	/* classify headers via a kind of methods */
 	do_sequential_search(rulelist, headerlist);
