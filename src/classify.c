@@ -103,7 +103,7 @@ void pointer_search(prbt** PT, char* header)
 				else { break; }
 			}
 			if (NULL != ptr->rs)
-				for (it = ptr->rs; NULL != it; it = it->next)
+				for (it = ptr->rs; NULL != it; it = it->next) 
 					if (A[it->run.rule_num] == it->run.run_num-1) {
 						++A[it->run.rule_num];
 						if (it->run.terminal)

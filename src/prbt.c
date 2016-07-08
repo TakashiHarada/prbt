@@ -25,6 +25,7 @@ runlist* copy_run(runlist* r1, runlist* r2)
 		new->run.rule_num = ptr->run.rule_num;
 		new->run.run_num = ptr->run.run_num;
 		new->run.trie_number = ptr->run.trie_number;
+		new->run.terminal = ptr->run.terminal;
 		new->prev = new->next = NULL;
 
 		//printf("(%d %d)\n", new->run.rule_num, new->run.run_num);
@@ -58,8 +59,8 @@ void low_trie_traverse(prbt* high, prbt** PT)
 		for (i = high->trie_number; i < _w-1; ++i, ++j) {
 			low = PT[i+1];
 			for (l = j; l < len; ++l) {
-				if ('0' == bit_string[l] && NULL != low->left) { low = low->left; }
-				else if ('1' == bit_string[l] && NULL != low->right) { low = low->right; }
+				if ('0' == bit_string[l] && NULL != low->pleft) { low = low->pleft; }
+				else if ('1' == bit_string[l] && NULL != low->pright) { low = low->pright; }
 				else { break; }
 			}
 			if (l == len) {
