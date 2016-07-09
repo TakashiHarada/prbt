@@ -14,7 +14,7 @@ runlist* copy_run(runlist* r1, runlist* r2)
 	runlist* wptr = NULL;
 	bool flag = false;
 	unsigned l;
-	runlist* head;
+	runlist* head = NULL;
 	runlist* new;
 	while (NULL != ptr) {
 		l = strlen(ptr->run.run) + 1;
@@ -46,6 +46,13 @@ runlist* copy_run(runlist* r1, runlist* r2)
 	return r1;
 }
 
+bool need_pointer(prbt* ptr)
+{
+	if (NULL != ptr->pleft && NULL != ptr->pright) { return false; }
+	if (strlen(ptr->label) + ptr->trie_number == _w) { return false; }
+	return true;
+}
+
 void low_trie_traverse(prbt* high, prbt** PT)
 {
 	unsigned len = strlen(high->label);
@@ -53,7 +60,7 @@ void low_trie_traverse(prbt* high, prbt** PT)
 	strcpy(bit_string, high->label);
 	bit_string[len] = '\0';
 
-	printf("%d %s\n", high->trie_number, high->label);
+	//printf("%d %s\n", high->trie_number, high->label);
 	{ unsigned i, l, j = 1;
 		prbt* low;
 		for (i = high->trie_number; i < _w-1; ++i, ++j) {
@@ -65,7 +72,7 @@ void low_trie_traverse(prbt* high, prbt** PT)
 			}
 			if (l == len) {
 				/* set pointer for classify */
-				if (NULL == high->pleft || NULL == high->pright) { set_pointer(high, low); }
+				if (need_pointer(high)) { set_pointer(high, low); }
 				/* set run for classify */
 				if (NULL != low->rs) { high->rs = copy_run(high->rs, low->rs); }
 				break;
@@ -204,6 +211,7 @@ void free_traverse_PRBT(prbt* PT)
 	free_traverse_PRBT(PT->left);
 	free_traverse_PRBT(PT->right);
 
+	/*
 	if (NULL != PT->rs) {
 		runlist* ptr = PT->rs;
 		runlist* ptr2;
@@ -214,6 +222,7 @@ void free_traverse_PRBT(prbt* PT)
 			free(ptr2);
 		}
 	}
+	*/
 	if (NULL != PT->label) { free(PT->label); }
 	if (NULL != PT->left) { free(PT->left); }
 	if (NULL != PT->right) { free(PT->right); }
@@ -236,10 +245,12 @@ void traverse_PT(prbt* PT)
 
 	printf("%s, ", PT->label);
 	runlist* ptr = PT->rs;
+	/*
 	while (NULL != ptr) {
 		printf("(%d, %d) ", ptr->run.rule_num, ptr->run.run_num);
 		ptr = ptr->next;
 	}
+	*/
 	if (NULL != PT->pleft)
 		printf("L--> (%d %s) ", PT->pleft->trie_number+1, PT->pleft->label);
 	else
