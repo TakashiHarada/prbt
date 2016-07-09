@@ -53,7 +53,7 @@ void low_trie_traverse(prbt* high, prbt** PT)
 	strcpy(bit_string, high->label);
 	bit_string[len] = '\0';
 
-	//printf("%d %s\n", high->trie_number, high->label);
+	printf("%d %s\n", high->trie_number, high->label);
 	{ unsigned i, l, j = 1;
 		prbt* low;
 		for (i = high->trie_number; i < _w-1; ++i, ++j) {
@@ -134,11 +134,11 @@ prbt* make_PRBT_node(char b, char* str, unsigned tn)
 	prbt* node = (prbt*)malloc(sizeof(prbt));
 	node->bit = b;
 	node->left = NULL;
-	node->pright = NULL;
+	node->right = NULL;
 	node->rs = NULL;
 
-	node->right = NULL;
 	node->pleft = NULL;
+	node->pright = NULL;
 	node->trie_number = tn;
 	unsigned l = strlen(str);
 	node->label = (char*)malloc((l+1)*sizeof(char));
