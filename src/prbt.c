@@ -8,40 +8,40 @@ void set_pointer(prbt* high, prbt* low)
 	if (NULL == high->pright) { high->pright = low->pright; }
 }
 
+runlist* add_run2(runlist* rs, run r)
+{
+	runlist* new = (runlist*)malloc(sizeof(runlist));
+	new->run.run = (char*)malloc((_w+1)*sizeof(char));
+	strcpy(new->run.run, r.run);
+	new->run.run[_w] = '\0';
+	new->run.rule_num = r.rule_num;
+	new->run.run_num = r.run_num;
+	new->run.trie_number = r.trie_number;
+	new->run.terminal = r.terminal;
+	new->prev = new->next = NULL;
+
+	runlist* ptr = rs;
+	if (NULL == rs) { return new; }
+	while (NULL != ptr->next) { ptr = ptr->next; }
+	ptr->next = new;
+	new->prev = ptr;
+	return rs;
+}
+
 runlist* copy_run(runlist* r1, runlist* r2)
 {
 	runlist* ptr = r2;
-	runlist* wptr = NULL;
-	bool flag = false;
-	unsigned l;
-	runlist* head = NULL;
-	runlist* new;
 	while (NULL != ptr) {
-		l = strlen(ptr->run.run) + 1;
-		new = (runlist*)malloc(sizeof(runlist));
-		new->run.run = (char*)malloc(l*sizeof(char));
-		strcpy(new->run.run, ptr->run.run);
-		new->run.run[_w] = '\0';
-		new->run.rule_num = ptr->run.rule_num;
-		new->run.run_num = ptr->run.run_num;
-		new->run.trie_number = ptr->run.trie_number;
-		new->run.terminal = ptr->run.terminal;
-		new->prev = new->next = NULL;
-
-		//printf("(%d %d)\n", new->run.rule_num, new->run.run_num);
-		if (!flag) { flag = true; wptr = head = new; }
-		else {
-			while (NULL != wptr->next) { wptr = wptr->next; }
-			wptr->next = new;
-			new->prev = wptr;
-		}
-
+		run addend = { 
+			ptr->run.run, 
+			ptr->run.rule_num, 
+			ptr->run.run_num, 
+			ptr->run.trie_number, 
+			ptr->run.terminal };
+		
+		r1 = add_run2(r1, addend);
 		ptr = ptr->next;
 	}
-	if (NULL == r1) { return head; }
-	wptr = r1;
-	while (NULL != wptr->next) { wptr = wptr->next; }
-	wptr->next = head;
 
 	return r1;
 }
@@ -211,18 +211,7 @@ void free_traverse_PRBT(prbt* PT)
 	free_traverse_PRBT(PT->left);
 	free_traverse_PRBT(PT->right);
 
-	/*
-	if (NULL != PT->rs) {
-		runlist* ptr = PT->rs;
-		runlist* ptr2;
-		while (NULL != ptr) {
-			//printf("free run (%s, %2d, %d)\n", ptr->run.run, ptr->run.rule_num, ptr->run.run_num);
-			ptr2 = ptr;
-			ptr = ptr->next;
-			free(ptr2);
-		}
-	}
-	*/
+	if (NULL != PT->rs) { free_runlist(PT->rs); }
 	if (NULL != PT->label) { free(PT->label); }
 	if (NULL != PT->left) { free(PT->left); }
 	if (NULL != PT->right) { free(PT->right); }
@@ -245,12 +234,10 @@ void traverse_PT(prbt* PT)
 
 	printf("%s, ", PT->label);
 	runlist* ptr = PT->rs;
-	/*
 	while (NULL != ptr) {
 		printf("(%d, %d) ", ptr->run.rule_num, ptr->run.run_num);
 		ptr = ptr->next;
 	}
-	*/
 	if (NULL != PT->pleft)
 		printf("L--> (%d %s) ", PT->pleft->trie_number+1, PT->pleft->label);
 	else
