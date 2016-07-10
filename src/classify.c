@@ -20,20 +20,21 @@ void sequential_search(char** rulelist, char* header)
       break;
     }
 
-	/*
-    char defaultrule[_w+1];
-    unsigned j;
-    for (j = 0; j < _w; ++j)
-    defaultrule[j] = '*';
-    defaultrule[_w] = '\0';
+	/*	
+  char defaultrule[_w+1];
+  unsigned j;
+  for (j = 0; j < _w; ++j)
+  	defaultrule[j] = '*';
+  	defaultrule[_w] = '\0';
 	*/
+
 	/*
-    if (i != _n)
-    //printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
-    printf("%s --> %2d\n", header, i+1);
-    else
-    //printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
-    printf("%s --> %2d\n", header, i+1);
+  if (i != _n)
+  //printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
+  	printf("%s --> %2d\n", header, i+1);
+  else
+  //printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
+  	printf("%s --> %2d\n", header, i+1);
 	*/
 }
 
@@ -144,7 +145,7 @@ void do_pointer_search(prbt** PT, char** headerlist)
   struct timeval start_time, end_time;
   double sec_time_of_day;
   unsigned i, j;
-  printf("================= Pointed Run-Based Search ================\n");
+  printf("============== Pointed Run-Based Trie Search ==============\n");
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     for (j = 1; j < _n; ++j)

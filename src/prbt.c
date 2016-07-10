@@ -20,6 +20,8 @@ runlist* add_run2(runlist* rs, run r)
 	new->run.terminal = r.terminal;
 	new->prev = new->next = NULL;
 
+	++_number_of_run_of_prbt;
+
 	runlist* ptr = rs;
 	if (NULL == rs) { return new; }
 	while (NULL != ptr->next) { ptr = ptr->next; }
@@ -116,6 +118,7 @@ void traverse_and_make_backbone_PRBT(prbt* PT, run r)
 				strncpy(buf, bit_string, i+1); // cut a label 
 				buf[i+1] = '\0';
 				ptr->left = make_PRBT_node('0', buf, k);
+				++_number_of_prbt_node;
 			}
 			ptr->pleft = ptr->left;
 			ptr = ptr->left;
@@ -125,12 +128,14 @@ void traverse_and_make_backbone_PRBT(prbt* PT, run r)
 				strncpy(buf, bit_string, i+1); // cut a label
 				buf[i+1] = '\0';
 				ptr->right = make_PRBT_node('1', buf, k);
+				++_number_of_prbt_node;
 			}
 			ptr->pright = ptr->right;
 			ptr = ptr->right;
 		}
 	}
 	ptr->rs = add_run_to_RBT_node(ptr->rs, r); // add_run_to_RBT_node can be used to PRBT node.
+	++_number_of_run_of_prbt;
 
 	free(bit_string);
 	free(buf);
@@ -157,12 +162,15 @@ prbt* make_PRBT_node(char b, char* str, unsigned tn)
 
 prbt** make_Pointed_Run_Based_Trie(char** rulelist)
 {
+	_number_of_prbt_node = 0;
+	_number_of_run_of_prbt = 0;
 	prbt** PT = (prbt**)malloc(_w*sizeof(prbt));
 	/* make a root nodes PT[0], PT[1], ..., PT[w-1] 
 	 * Caution! Pointed Run-Based Trie PT[i] starts from PT[0] not PT[1] */
 	{	unsigned i;
 		for (i = 0; i < _w; ++i) {
 			PT[i] = make_PRBT_node('_', "root", i);
+			++_number_of_prbt_node;
 		}
 	}
 
@@ -201,6 +209,8 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
 			if (i == 0) { break; }
 		}
 	}
+	printf("A number of Nodes of PRBT = %d\n", _number_of_prbt_node);
+	printf("A number of Runs  of PRBT = %d\n\n", _number_of_run_of_prbt);
 
 	return PT;
 }

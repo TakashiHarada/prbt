@@ -15,7 +15,8 @@
 #include <io.h>
 #endif
 
-unsigned _number_of_rbt;
+unsigned _number_of_rbt_node;
+unsigned _number_of_run_of_rbt;
 
 typedef struct run {
 	char* run;

@@ -19,6 +19,9 @@
 #include <rbt.h>
 #endif
 
+unsigned _number_of_prbt_node;
+unsigned _number_of_run_of_prbt;
+
 struct prbt_node {
 	char bit;
 	runlist* rs;
