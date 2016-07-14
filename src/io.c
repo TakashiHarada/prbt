@@ -12,7 +12,7 @@ char** read_header_list(char* header_file_name)
 	size_t len = 0;
 	ssize_t read;
 	unsigned n = 0;
-	unsigned w;
+	unsigned w = 0;
 	while ((read = getline(&line, &len, fp)) != -1) {
 		w = read-1;
 		++n;
