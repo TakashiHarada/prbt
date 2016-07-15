@@ -5,9 +5,11 @@
 bool match_rule_and_header(char* rule, char* header)
 {
   unsigned i;
-  for (i = 0; i < _w; ++i)
+  for (i = 0; i < _w; ++i) {
+		++_compare_number_sequential_search;
     if (rule[i] != '*' && rule[i] != header[i])
       return false;
+	}
 
   return true;
 }
@@ -44,6 +46,7 @@ void do_sequential_search(char** rulelist, char** headerlist)
   struct timeval start_time, end_time;
   double sec_time_of_day;
   unsigned i;
+	_compare_number_sequential_search = 0;
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i)
     sequential_search(rulelist, headerlist[i]);
@@ -51,7 +54,7 @@ void do_sequential_search(char** rulelist, char** headerlist)
   printf("=========================================================== \n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_sequential_search);
 }
 
 void simple_search(rbt** T, char* header, unsigned* A)
@@ -64,6 +67,7 @@ void simple_search(rbt** T, char* header, unsigned* A)
     for (k = 0; k < _w; ++k) {
       ptr = T[k];
       for (i = k; i < _w; ++i) {
+				++_traverse_number_simple_search;
 	if ('0' == header[i]) {
 	  if (NULL != ptr->left) { ptr = ptr->left; }
 	  else { break; }
@@ -97,6 +101,7 @@ void do_simple_search(rbt** T, char** headerlist)
   struct timeval start_time, end_time;
   double sec_time_of_day;
 	_compare_number_simple_search = 0;
+	_traverse_number_simple_search = 0;
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
@@ -106,7 +111,7 @@ void do_simple_search(rbt** T, char** headerlist)
   printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f, %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_number_simple_search + _traverse_number_simple_search);
 }
 
 void pointer_search(prbt** PT, char* header, unsigned* A)
@@ -118,6 +123,7 @@ void pointer_search(prbt** PT, char* header, unsigned* A)
   { unsigned i, j, k;
     for (i = 0; i < _w; ++i) {
       if ('0' == header[i]) {
+				++_traverse_number_pointer_search;
 	if (NULL != ptr->pleft) { ptr = ptr->pleft; }
 	else { break; }
       }
@@ -148,6 +154,7 @@ void do_pointer_search(prbt** PT, char** headerlist)
   double sec_time_of_day;
   unsigned i;
   printf("============== Pointed Run-Based Trie Search ==============\n");
+	_traverse_number_pointer_search = 0;
 	_compare_number_pointer_search = 0;
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
@@ -158,5 +165,5 @@ void do_pointer_search(prbt** PT, char** headerlist)
   gettimeofday(&end_time, NULL);
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f, %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search);
 }

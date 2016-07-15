@@ -27,8 +27,11 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+unsigned _compare_number_sequential_search;
 unsigned _compare_number_simple_search;
+unsigned _traverse_number_simple_search;
 unsigned _compare_number_pointer_search;
+unsigned _traverse_number_pointer_search;
 
 void pointer_search(prbt**, char*, unsigned*);
 void do_pointer_search(prbt**, char**);
