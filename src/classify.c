@@ -6,10 +6,10 @@ bool match_rule_and_header(char* rule, char* header)
 {
   unsigned i;
   for (i = 0; i < _w; ++i) {
-		++_compare_number_sequential_search;
+    ++_compare_number_sequential_search;
     if (rule[i] != '*' && rule[i] != header[i])
       return false;
-	}
+  }
 
   return true;
 }
@@ -21,23 +21,23 @@ void sequential_search(char** rulelist, char* header)
     if (match_rule_and_header(rulelist[i], header)) {
       break;
     }
-
-	/*	
-  char defaultrule[_w+1];
-  unsigned j;
-  for (j = 0; j < _w; ++j)
+  
+  /*	
+	char defaultrule[_w+1];
+	unsigned j;
+	for (j = 0; j < _w; ++j)
   	defaultrule[j] = '*';
   	defaultrule[_w] = '\0';
-	*/
+  */
 
-	/*
-  if (i != _n)
-  //printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
-  	printf("%s --> %2d\n", header, i+1);
-  else
-  //printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
-  	printf("%s --> %2d\n", header, i+1);
-	*/
+  //printf("%s --> %2d\n", header, i+1);
+  /*
+    if (i != _n)
+    printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
+    else
+    printf("%s -> rule[%2d] %s\n", header, _n+1, defaultrule);
+    printf("%s --> %2d\n", header, i+1);
+  */
 }
 
 void do_sequential_search(char** rulelist, char** headerlist)
@@ -61,13 +61,13 @@ void simple_search(rbt** T, char* header, unsigned* A)
 {
   rbt* ptr;
   runlist* it;
-	unsigned priority = _n+1;
+  unsigned priority = _n+1;
 
   { unsigned k, i, s, t;
     for (k = 0; k < _w; ++k) {
       ptr = T[k];
       for (i = k; i < _w; ++i) {
-				++_traverse_number_simple_search;
+	++_traverse_number_simple_search;
 	if ('0' == header[i]) {
 	  if (NULL != ptr->left) { ptr = ptr->left; }
 	  else { break; }
@@ -80,11 +80,14 @@ void simple_search(rbt** T, char* header, unsigned* A)
 	  for (it = ptr->rs; NULL != it; it = it->next) {
 	    s = it->run.rule_num;
 	    t = it->run.run_num;
-			++_compare_number_simple_search;
+	    ++_compare_number_simple_search;
 	    if (A[s] == t-1) {
 	      A[s] = t;
-	      if (it->run.terminal)
+	      ++_compare_priority_in_simple_search;
+	      if (it->run.terminal) {
+		++_compare_priority_in_simple_search;
 		if (s < priority) { priority = s; }
+	      }
 	    }
 	  }
       }
@@ -100,8 +103,9 @@ void do_simple_search(rbt** T, char** headerlist)
   unsigned i;
   struct timeval start_time, end_time;
   double sec_time_of_day;
-	_compare_number_simple_search = 0;
-	_traverse_number_simple_search = 0;
+  _compare_number_simple_search = 0;
+  _compare_priority_in_simple_search = 0;
+  _traverse_number_simple_search = 0;
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
@@ -111,19 +115,19 @@ void do_simple_search(rbt** T, char** headerlist)
   printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_number_simple_search + _traverse_number_simple_search);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_priority_in_simple_search, _compare_number_simple_search + _traverse_number_simple_search + _compare_priority_in_simple_search);
 }
 
 void pointer_search(prbt** PT, char* header, unsigned* A)
 {
   prbt* ptr = PT[0];
   runlist* it;
-	unsigned priority = _n+1;
-
+  unsigned priority = _n+1;
+	
   { unsigned i, j, k;
     for (i = 0; i < _w; ++i) {
+      ++_traverse_number_pointer_search;
       if ('0' == header[i]) {
-				++_traverse_number_pointer_search;
 	if (NULL != ptr->pleft) { ptr = ptr->pleft; }
 	else { break; }
       }
@@ -135,11 +139,14 @@ void pointer_search(prbt** PT, char* header, unsigned* A)
 	for (it = ptr->rs; NULL != it; it = it->next) {
 	  j = it->run.rule_num;
 	  k = it->run.run_num;
-		++_compare_number_pointer_search;
+	  ++_compare_number_pointer_search;
 	  if (A[j] == k-1) {
 	    A[j] = k;
-	    if (it->run.terminal)
+	    ++_compare_priority_in_pointer_search;
+	    if (it->run.terminal) {
+	      ++_compare_priority_in_pointer_search;
 	      if (j < priority) { priority = j; }
+	    }
 	  }
 	}
     }
@@ -154,16 +161,17 @@ void do_pointer_search(prbt** PT, char** headerlist)
   double sec_time_of_day;
   unsigned i;
   printf("============== Pointed Run-Based Trie Search ==============\n");
-	_traverse_number_pointer_search = 0;
-	_compare_number_pointer_search = 0;
+  _traverse_number_pointer_search = 0;
+  _compare_priority_in_pointer_search = 0;
+  _compare_number_pointer_search = 0;
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
-		memset(A+1, 0, _n*sizeof(unsigned));
+    memset(A+1, 0, _n*sizeof(unsigned));
     pointer_search(PT, headerlist[i], A);
   }
-  printf("===========================================================\n");
   gettimeofday(&end_time, NULL);
+  printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_priority_in_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search + _compare_priority_in_pointer_search);
 }

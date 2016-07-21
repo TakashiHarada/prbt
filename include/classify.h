@@ -27,6 +27,8 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+unsigned _compare_priority_in_pointer_search;
+unsigned _compare_priority_in_simple_search;
 unsigned _compare_number_sequential_search;
 unsigned _compare_number_simple_search;
 unsigned _traverse_number_simple_search;

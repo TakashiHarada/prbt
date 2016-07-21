@@ -19,25 +19,25 @@ unsigned _number_of_rbt_node;
 unsigned _number_of_run_of_rbt;
 
 typedef struct run {
-	char* run;
-	unsigned rule_num;
-	unsigned run_num;
-	unsigned trie_number;
-	bool terminal;
+  char* run;
+  unsigned rule_num;
+  unsigned run_num;
+  unsigned trie_number;
+  bool terminal;
 } run;
 
 struct rl {
-	run run;
-	struct rl* prev;
-	struct rl* next;
+  run run;
+  struct rl* prev;
+  struct rl* next;
 };
 typedef struct rl runlist;
 
 struct rbt_node {
-	char bit;
-	runlist* rs;
-	struct rbt_node* left;
-	struct rbt_node* right;
+  char bit;
+  runlist* rs;
+  struct rbt_node* left;
+  struct rbt_node* right;
 };
 typedef struct rbt_node rbt;
 

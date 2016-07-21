@@ -23,15 +23,15 @@ unsigned _number_of_prbt_node;
 unsigned _number_of_run_of_prbt;
 
 struct prbt_node {
-	char bit;
-	runlist* rs;
-	struct prbt_node* left;
-	struct prbt_node* right;
-	/* following are for Pointed Run-Based Trie Search */
-	char* label; 
-	unsigned trie_number;
-	struct prbt_node* pleft;
-	struct prbt_node* pright;
+  char bit;
+  runlist* rs;
+  struct prbt_node* left;
+  struct prbt_node* right;
+  /* following are for Pointed Run-Based Trie Search */
+  char* label; 
+  unsigned trie_number;
+  struct prbt_node* pleft;
+  struct prbt_node* pright;
 };
 typedef struct prbt_node prbt;
 
