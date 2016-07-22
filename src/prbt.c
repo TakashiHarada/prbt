@@ -50,6 +50,7 @@ runlist* copy_run(runlist* r1, runlist* r2)
       if (p->run.terminal && p->run.rule_num < addend.rule_num) {
 	//printf("(%2d, %2d) --> (%2d, %2d)\n", p->run.rule_num, p->run.run_num, addend.rule_num, addend.run_num);
 	flag = false;
+	break;
       }
       p = p->next;
     }
