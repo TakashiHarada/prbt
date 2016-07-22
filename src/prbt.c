@@ -33,6 +33,8 @@ runlist* add_run2(runlist* rs, run r)
 runlist* copy_run(runlist* r1, runlist* r2)
 {
   runlist* ptr = r2;
+  bool flag;
+
   while (NULL != ptr) {
     run addend = { 
       ptr->run.run, 
@@ -41,15 +43,26 @@ runlist* copy_run(runlist* r1, runlist* r2)
       ptr->run.trie_number, 
       ptr->run.terminal 
     };
-    
-    if (NULL != r1)
-      if (r1->run.terminal && r1->run.rule_num < addend.rule_num) {
-	printf("(%2d, %2d) --> (%2d, %2d)\n", r1->run.rule_num, r1->run.run_num, addend.rule_num, addend.run_num);
-	ptr = ptr->next;
-	continue;
-      }
 
-    r1 = add_run2(r1, addend);
+    runlist* p = r1;
+    flag = true;
+    while (NULL != p) {
+      if (p->run.terminal && p->run.rule_num < addend.rule_num) {
+	//printf("(%2d, %2d) --> (%2d, %2d)\n", p->run.rule_num, p->run.run_num, addend.rule_num, addend.run_num);
+	flag = false;
+      }
+      p = p->next;
+    }
+
+    if (flag) { r1 = add_run2(r1, addend); }
+
+    /* if (NULL != r1) */
+    /*   if (r1->run.terminal && r1->run.rule_num < addend.rule_num) { */
+    /* 	printf("(%2d, %2d) --> (%2d, %2d)\n", r1->run.rule_num, r1->run.run_num, addend.rule_num, addend.run_num); */
+    /* 	ptr = ptr->next; */
+    /* 	continue; */
+    /*   } */
+    
     ptr = ptr->next;
   }
 
