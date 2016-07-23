@@ -36,6 +36,8 @@ int main(int argc, char** argv)
   putchar('\n');
   do_simple_search(T, headerlist);
   putchar('\n');
+  do_simple_search2(T, rulelist, headerlist);
+  putchar('\n');
   do_pointer_search(PT, headerlist);
   putchar('\n');
 

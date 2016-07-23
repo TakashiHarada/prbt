@@ -175,3 +175,92 @@ void do_pointer_search(prbt** PT, char** headerlist)
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
   printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_priority_in_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search + _compare_priority_in_pointer_search);
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+
+void simple_search2(rbt** T, char* header, unsigned* A, unsigned* R)
+{
+  rbt* ptr;
+  runlist* it;
+  
+  {
+    unsigned k, i;
+    for (k = 0; k < _w; ++k) {
+      ptr = T[k];
+      for (i = k; i < _w; ++i) {
+	if ('0' == header[i]) {
+	  if (NULL != ptr->left) { ptr = ptr->left; }
+	  else { break; }
+	}
+	else {
+	  if (NULL != ptr->right) { ptr = ptr->right; }
+	  else { break; }
+	}
+	if (NULL != ptr->rs)
+	  for (it = ptr->rs; NULL != it; it = it->next) {
+	    ++A[it->run.rule_num];
+	  }
+      }
+    }
+  }
+
+  unsigned priority;
+  {
+    unsigned j;
+    for (j = 1; j < _n+1; ++j)
+      if (A[j] == R[j]) {
+	priority = j;
+	break;
+      }
+    if (j == _n+1)
+      priority = j;
+  }
+
+  //printf("%s --> %2d\n", header, priority);
+}
+
+unsigned count_run_number(char*rule)
+{
+  char tmp = '*';
+  unsigned i = 0;
+  unsigned m = 0;
+
+  while (rule[i] != '\0') {
+    if ('*' != rule[i] && '*' == tmp ) {
+      ++m;
+    }
+    tmp = rule[i];
+    ++i;
+  }
+
+  return m;
+}
+
+void count_run_number_on_rule_in_rulelist(char** rulelist, unsigned* R)
+{
+  unsigned i;
+  for (i = 1; i <= _n; ++i)
+    R[i] = count_run_number(rulelist[i-1]);
+  //printf("%s %d\n", rulelist[i-1], R[i]);
+}
+
+void do_simple_search2(rbt** T, char** rulelist, char** headerlist)
+{
+  printf("====================== Simple Search' =====================\n");
+  unsigned A[_n+1];
+  unsigned R[_n+1]; // R[i] holds a number of run on R_i
+  unsigned i;
+  struct timeval start_time, end_time;
+  double sec_time_of_day;
+  count_run_number_on_rule_in_rulelist(rulelist, R);
+  gettimeofday(&start_time, NULL);
+  for (i = 0; i < _hn; ++i) {
+    memset(A+1, 0, _n*sizeof(unsigned));
+    simple_search2(T, headerlist[i], A, R);
+  }
+  gettimeofday(&end_time, NULL);
+  printf("===========================================================\n");
+  sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
+    + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
+  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
+}
