@@ -115,7 +115,8 @@ void do_simple_search(rbt** T, char** headerlist)
   printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_priority_in_simple_search, _compare_number_simple_search + _traverse_number_simple_search + _compare_priority_in_simple_search);
+  //printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_priority_in_simple_search, _compare_number_simple_search + _traverse_number_simple_search + _compare_priority_in_simple_search);
+  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
 }
 
 void pointer_search(prbt** PT, char* header, unsigned* A)
@@ -173,7 +174,8 @@ void do_pointer_search(prbt** PT, char** headerlist)
   printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_priority_in_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search + _compare_priority_in_pointer_search);
+  //printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_priority_in_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search + _compare_priority_in_pointer_search);
+  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -204,16 +206,14 @@ void simple_search2(rbt** T, char* header, unsigned* A, unsigned* R)
     }
   }
 
-  unsigned priority;
+  unsigned priority = _n+1;
   {
     unsigned j;
     for (j = 1; j < _n+1; ++j)
       if (A[j] == R[j]) {
-	priority = j;
-	break;
+  	priority = j;
+  	break;
       }
-    if (j == _n+1)
-      priority = j;
   }
 
   //printf("%s --> %2d\n", header, priority);
