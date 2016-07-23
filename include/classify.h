@@ -35,16 +35,18 @@ unsigned _traverse_number_simple_search;
 unsigned _compare_number_pointer_search;
 unsigned _traverse_number_pointer_search;
 
-void simple_search2(rbt**, char*, unsigned*, unsigned*);
+unsigned pointer_search2(prbt**, char*, unsigned*, unsigned*);
+unsigned simple_search2(rbt**, char*, unsigned*, unsigned*);
 unsigned count_run_number(char*);
 void count_run_number_on_rule_in_rulelist(char**, unsigned*);
 void do_simple_search2(rbt**, char**, char**);
+void do_pointer_search2(prbt**, char**, char**);
 
-void pointer_search(prbt**, char*, unsigned*);
+unsigned pointer_search(prbt**, char*, unsigned*);
+unsigned simple_search(rbt**, char*, unsigned*);
+unsigned sequential_search(char **, char*);
 void do_pointer_search(prbt**, char**);
-void simple_search(rbt**, char*, unsigned*);
 void do_simple_search(rbt**, char**);
-void sequential_search(char **, char*);
 void do_sequential_search(char **, char**);
 
 #endif

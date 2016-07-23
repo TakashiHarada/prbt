@@ -14,13 +14,15 @@ bool match_rule_and_header(char* rule, char* header)
   return true;
 }
 
-void sequential_search(char** rulelist, char* header)
+unsigned sequential_search(char** rulelist, char* header)
 {
   unsigned i;
   for (i = 0; i < _n; ++i)
     if (match_rule_and_header(rulelist[i], header)) {
       break;
     }
+
+  return i+1;
   
   /*	
 	char defaultrule[_w+1];
@@ -57,42 +59,43 @@ void do_sequential_search(char** rulelist, char** headerlist)
   printf("w = %d, n = %d, number of header = %d -- %f, %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_sequential_search);
 }
 
-void simple_search(rbt** T, char* header, unsigned* A)
+unsigned simple_search(rbt** T, char* header, unsigned* A)
 {
   rbt* ptr;
   runlist* it;
   unsigned priority = _n+1;
 
-  { unsigned k, i, s, t;
-    for (k = 0; k < _w; ++k) {
-      ptr = T[k];
-      for (i = k; i < _w; ++i) {
-	++_traverse_number_simple_search;
-	if ('0' == header[i]) {
-	  if (NULL != ptr->left) { ptr = ptr->left; }
-	  else { break; }
-	}
-	else {
-	  if (NULL != ptr->right) { ptr = ptr->right; }
-	  else { break; }
-	}
-	if (NULL != ptr->rs)
-	  for (it = ptr->rs; NULL != it; it = it->next) {
-	    s = it->run.rule_num;
-	    t = it->run.run_num;
-	    ++_compare_number_simple_search;
-	    if (A[s] == t-1) {
-	      A[s] = t;
+  unsigned k, i, s, t;
+  for (k = 0; k < _w; ++k) {
+    ptr = T[k];
+    for (i = k; i < _w; ++i) {
+      ++_traverse_number_simple_search;
+      if ('0' == header[i]) {
+	if (NULL != ptr->left) { ptr = ptr->left; }
+	else { break; }
+      }
+      else {
+	if (NULL != ptr->right) { ptr = ptr->right; }
+	else { break; }
+      }
+      if (NULL != ptr->rs)
+	for (it = ptr->rs; NULL != it; it = it->next) {
+	  s = it->run.rule_num;
+	  t = it->run.run_num;
+	  ++_compare_number_simple_search;
+	  if (A[s] == t-1) {
+	    A[s] = t;
+	    ++_compare_priority_in_simple_search;
+	    if (it->run.terminal) {
 	      ++_compare_priority_in_simple_search;
-	      if (it->run.terminal) {
-		++_compare_priority_in_simple_search;
-		if (s < priority) { priority = s; }
-	      }
+	      if (s < priority) { priority = s; }
 	    }
 	  }
-      }
+	}
     }
   }
+
+  return priority;
   //printf("%s --> %2d\n", header, priority);
 }
 
@@ -119,39 +122,40 @@ void do_simple_search(rbt** T, char** headerlist)
   printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
 }
 
-void pointer_search(prbt** PT, char* header, unsigned* A)
+unsigned pointer_search(prbt** PT, char* header, unsigned* A)
 {
   prbt* ptr = PT[0];
   runlist* it;
   unsigned priority = _n+1;
 	
-  { unsigned i, j, k;
-    for (i = 0; i < _w; ++i) {
-      ++_traverse_number_pointer_search;
-      if ('0' == header[i]) {
-	if (NULL != ptr->pleft) { ptr = ptr->pleft; }
-	else { break; }
-      }
-      else {
-	if (NULL != ptr->pright) { ptr = ptr->pright; }
-	else { break; }
-      }
-      if (NULL != ptr->rs)
-	for (it = ptr->rs; NULL != it; it = it->next) {
-	  j = it->run.rule_num;
-	  k = it->run.run_num;
-	  ++_compare_number_pointer_search;
-	  if (A[j] == k-1) {
-	    A[j] = k;
+  unsigned i, j, k;
+  for (i = 0; i < _w; ++i) {
+    ++_traverse_number_pointer_search;
+    if ('0' == header[i]) {
+      if (NULL != ptr->pleft) { ptr = ptr->pleft; }
+      else { break; }
+    }
+    else {
+      if (NULL != ptr->pright) { ptr = ptr->pright; }
+      else { break; }
+    }
+    if (NULL != ptr->rs)
+      for (it = ptr->rs; NULL != it; it = it->next) {
+	j = it->run.rule_num;
+	k = it->run.run_num;
+	++_compare_number_pointer_search;
+	if (A[j] == k-1) {
+	  A[j] = k;
+	  ++_compare_priority_in_pointer_search;
+	  if (it->run.terminal) {
 	    ++_compare_priority_in_pointer_search;
-	    if (it->run.terminal) {
-	      ++_compare_priority_in_pointer_search;
-	      if (j < priority) { priority = j; }
-	    }
+	    if (j < priority) { priority = j; }
 	  }
 	}
-    }
+      }
   }
+
+  return priority;
   //printf("%s --> %2d\n", header, priority);
 }
 
@@ -179,44 +183,65 @@ void do_pointer_search(prbt** PT, char** headerlist)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
 
-void simple_search2(rbt** T, char* header, unsigned* A, unsigned* R)
+unsigned simple_search2(rbt** T, char* header, unsigned* A, unsigned* R)
 {
   rbt* ptr;
   runlist* it;
   
-  {
-    unsigned k, i;
-    for (k = 0; k < _w; ++k) {
-      ptr = T[k];
-      for (i = k; i < _w; ++i) {
-	if ('0' == header[i]) {
-	  if (NULL != ptr->left) { ptr = ptr->left; }
-	  else { break; }
-	}
-	else {
-	  if (NULL != ptr->right) { ptr = ptr->right; }
-	  else { break; }
-	}
-	if (NULL != ptr->rs)
-	  for (it = ptr->rs; NULL != it; it = it->next) {
-	    ++A[it->run.rule_num];
-	  }
+  unsigned k, i;
+  for (k = 0; k < _w; ++k) {
+    ptr = T[k];
+    for (i = k; i < _w; ++i) {
+      if ('0' == header[i]) {
+	if (NULL != ptr->left) { ptr = ptr->left; }
+	else { break; }
       }
+      else {
+	if (NULL != ptr->right) { ptr = ptr->right; }
+	else { break; }
+      }
+      if (NULL != ptr->rs)
+	for (it = ptr->rs; NULL != it; it = it->next) {
+	  ++A[it->run.rule_num];
+	}
     }
   }
+  unsigned j;
+  for (j = 1; j < _n+1; ++j)
+    if (A[j] == R[j])
+      return j;
 
-  unsigned priority = _n+1;
-  {
-    unsigned j;
-    for (j = 1; j < _n+1; ++j)
-      if (A[j] == R[j]) {
-  	priority = j;
-  	break;
-      }
+  return _n+1;
+}
+
+unsigned pointer_search2(prbt** PT, char* header, unsigned* A, unsigned* R)
+{
+  prbt* ptr = PT[0];
+  runlist* it;
+	
+  unsigned i;
+  for (i = 0; i < _w; ++i) {
+    if ('0' == header[i]) {
+      if (NULL != ptr->pleft) { ptr = ptr->pleft; }
+      else { break; }
+    }
+    else {
+      if (NULL != ptr->pright) { ptr = ptr->pright; }
+      else { break; }
+    }
+    if (NULL != ptr->rs)
+      for (it = ptr->rs; NULL != it; it = it->next)
+	++A[it->run.rule_num];
   }
 
-  //printf("%s --> %2d\n", header, priority);
+  unsigned j;
+  for (j = 1; j <= _n; ++j)
+    if (A[j] == R[j])
+      return j;
+
+  return _n+1;
 }
 
 unsigned count_run_number(char*rule)
@@ -257,6 +282,27 @@ void do_simple_search2(rbt** T, char** rulelist, char** headerlist)
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
     simple_search2(T, headerlist[i], A, R);
+  }
+  gettimeofday(&end_time, NULL);
+  printf("===========================================================\n");
+  sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
+    + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
+  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
+}
+
+void do_pointer_search2(prbt** PT, char** rulelist, char** headerlist)
+{
+  unsigned A[_n+1];
+	unsigned R[_n+1];
+  struct timeval start_time, end_time;
+  double sec_time_of_day;
+  unsigned i;
+  printf("============== Pointed Run-Based Trie Search' =============\n");
+	count_run_number_on_rule_in_rulelist(rulelist, R);
+  gettimeofday(&start_time, NULL);
+  for (i = 0; i < _hn; ++i) {
+    memset(A+1, 0, _n*sizeof(unsigned));
+    pointer_search2(PT, headerlist[i], A, R);
   }
   gettimeofday(&end_time, NULL);
   printf("===========================================================\n");
