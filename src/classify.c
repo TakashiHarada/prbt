@@ -61,6 +61,7 @@ void do_sequential_search(char** rulelist, char** headerlist)
 
 unsigned simple_search(rbt** T, char* header, unsigned* A)
 {
+
   rbt* ptr;
   runlist* it;
   unsigned priority = _n+1;
@@ -113,17 +114,19 @@ void do_simple_search(rbt** T, char** headerlist)
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
     simple_search(T, headerlist[i], A);
+    // printf("%s --> %3d\n", headerlist[i], simple_search(T, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  //printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_priority_in_simple_search, _compare_number_simple_search + _traverse_number_simple_search + _compare_priority_in_simple_search);
-  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_simple_search, _traverse_number_simple_search, _compare_priority_in_simple_search, _compare_number_simple_search + _traverse_number_simple_search + _compare_priority_in_simple_search);
+  // printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
 }
 
 unsigned pointer_search(prbt** PT, char* header, unsigned* A)
 {
+
   prbt* ptr = PT[0];
   runlist* it;
   unsigned priority = _n+1;
@@ -173,13 +176,14 @@ void do_pointer_search(prbt** PT, char** headerlist)
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
     pointer_search(PT, headerlist[i], A);
+    // printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   printf("===========================================================\n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  //printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_priority_in_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search + _compare_priority_in_pointer_search);
-  printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
+  printf("w = %d, n = %d, number of header = %d -- %f, %d + %d + %d = %d\n", _w, _n, _hn, sec_time_of_day, _compare_number_pointer_search, _traverse_number_pointer_search, _compare_priority_in_pointer_search, _compare_number_pointer_search + _traverse_number_pointer_search + _compare_priority_in_pointer_search);
+  // printf("w = %d, n = %d, number of header = %d -- %f\n", _w, _n, _hn, sec_time_of_day);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -298,11 +302,12 @@ void do_pointer_search2(prbt** PT, char** rulelist, char** headerlist)
   double sec_time_of_day;
   unsigned i;
   printf("============== Pointed Run-Based Trie Search' =============\n");
-	count_run_number_on_rule_in_rulelist(rulelist, R);
+  count_run_number_on_rule_in_rulelist(rulelist, R);
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
     pointer_search2(PT, headerlist[i], A, R);
+    // printf("%s --> %3d\n", headerlist[i], pointer_search2(PT, headerlist[i], A, R));
   }
   gettimeofday(&end_time, NULL);
   printf("===========================================================\n");
