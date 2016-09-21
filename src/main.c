@@ -32,11 +32,10 @@ int main(int argc, char** argv)
   // traverse_PRBT(PT);
   
   /* classify headers via a kind of methods */
-  do_sequential_search(rulelist, headerlist);
+  // do_sequential_search(rulelist, headerlist);
   putchar('\n');
   do_simple_search(T, headerlist);
   putchar('\n');
-  //do_pointer_search(PT, headerlist);
   do_pointer_search(PT[0], headerlist);
   putchar('\n');
 

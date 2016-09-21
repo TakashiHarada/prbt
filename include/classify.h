@@ -27,21 +27,20 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
-unsigned _compare_priority_in_pointer_search;
-unsigned _compare_priority_in_simple_search;
 unsigned long _compare_number_sequential_search;
-unsigned _compare_number_simple_search;
-unsigned _traverse_number_simple_search;
-unsigned _compare_number_pointer_search;
-unsigned _traverse_number_pointer_search;
 
-unsigned pointer_search2(prbt**, char*, unsigned*, unsigned*);
-unsigned simple_search2(rbt**, char*, unsigned*, unsigned*);
+unsigned long _trav_prbt;
+unsigned long _arr_prbt;
+unsigned long _cand_prbt;
+unsigned long _is_last_run_prbt;
+
+unsigned long _trav_rbt;
+unsigned long _arr_rbt;
+unsigned long _cand_rbt;
+unsigned long _is_last_run_rbt;
+
 unsigned count_run_number(char*);
 void count_run_number_on_rule_in_rulelist(char**, unsigned*);
-void do_simple_search2(rbt**, char**, char**);
-void do_pointer_search2(prbt**, char**, char**);
-
 unsigned pointer_search(prbt*, char*, unsigned*);
 unsigned simple_search(rbt**, char*, unsigned*);
 unsigned sequential_search(char **, char*);
