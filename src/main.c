@@ -36,11 +36,8 @@ int main(int argc, char** argv)
   putchar('\n');
   do_simple_search(T, headerlist);
   putchar('\n');
-  // do_simple_search2(T, rulelist, headerlist);
-  // putchar('\n');
-  do_pointer_search(PT, headerlist);
-  putchar('\n');
-  do_pointer_search2(PT, rulelist, headerlist);
+  //do_pointer_search(PT, headerlist);
+  do_pointer_search(PT[0], headerlist);
   putchar('\n');
 
   /* from here ========== freeing memories ========== */ 
