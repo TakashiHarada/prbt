@@ -22,6 +22,7 @@ unsigned sequential_search(char** rulelist, char* header)
       break;
     }
 
+  // printf("%s --> %2d\n", header, i+1);
   return i+1;
   
   /*	
@@ -32,7 +33,6 @@ unsigned sequential_search(char** rulelist, char* header)
   	defaultrule[_w] = '\0';
   */
 
-  //printf("%s --> %2d\n", header, i+1);
   /*
     if (i != _n)
     printf("%s -> rule[%2d] %s\n", header, i+1, rulelist[i]);
@@ -117,7 +117,7 @@ void do_simple_search(rbt** T, char** headerlist)
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
     simple_search(T, headerlist[i], A);
-    //printf("%s --> %3d\n", headerlist[i], simple_search(T, headerlist[i], A));
+    // printf("%s --> %3d\n", headerlist[i], simple_search(T, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   // printf("===========================================================\n");
