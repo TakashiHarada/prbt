@@ -126,6 +126,32 @@ runlist* add_run(runlist* rs, char* run_str, unsigned run_num, unsigned tn)
   return rs;
 }
 
+char** int_pair_to_01m()
+{
+	return NULL;
+}
+
+char** convert_range_to_01m(unsigned a, unsigned b, unsigned low, unsigned high)
+{
+	char** ss = NULL;
+	printf("%d %d %d %d\n", a, b, low, high);
+
+	if (a == low && b == high) int_pair_to_01m();
+	return ss;
+}
+
+char** rangerule_to_01mlist(char* rule, unsigned low, unsigned high)
+{
+	char del[] = " -.";
+	char *num;
+	unsigned a, b;
+	num = strtok(rule, del);
+	a = (unsigned)atoi(num);
+	num = strtok(NULL, del);
+	b = (unsigned)atoi(num);
+	return convert_range_to_01m(a,b,low,high);
+}
+
 runlist* cut_run(char* rule)
 {
   runlist* rs = NULL;

@@ -5,9 +5,16 @@
 int main(int argc, char** argv)
 {
   /* check arguments */
-  if (argc != 3) {
-    fprintf(stderr, "Usage: $./main <rule list> <pseudo packets>\n");
-    exit(1);
+  {
+    if (!strcmp("-c",argv[1])) {
+      printf("rule has a field specified by a range\n");
+			char s[] = "67-75";
+			rangerule_to_01mlist(s,10,0,65535);
+      exit(1);
+    } else if (argc != 3) {
+      fprintf(stderr, "Usage: $./main <rule list> <pseudo packets>\n");
+      exit(1);
+    }
   }
   
   /* read rule-list and header-list files */
