@@ -47,8 +47,6 @@ runlist* add_run_to_RBT_node(runlist*, run);
 void traverse_and_make_RBT_node(rbt*, run);
 void add_terminal_mark(runlist*);
 runlist* add_run(runlist*, char*, unsigned, unsigned);
-runlist* convert_range_to01m(unsigned, unsigned, unsigned, unsigned);
-char** rangerule_to_01mlist(char*, unsigned, unsigned);
 runlist* cut_run(char*);
 rbt* make_RBT_node(char);
 rbt** make_Run_Based_Trie(char**);

@@ -6,7 +6,7 @@ bool match_rule_and_header(char* rule, char* header)
 {
   unsigned i;
   for (i = 0; i < _w; ++i) {
-    //++_compare_number_sequential_search;
+    ++_compare_number_sequential_search;
     if (rule[i] != '*' && rule[i] != header[i])
       return false;
   }
@@ -48,7 +48,7 @@ void do_sequential_search(char** rulelist, char** headerlist)
   struct timeval start_time, end_time;
   double sec_time_of_day;
   unsigned i;
-	_compare_number_sequential_search = 0;
+  _compare_number_sequential_search = 0;
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i)
     sequential_search(rulelist, headerlist[i]);
@@ -56,8 +56,8 @@ void do_sequential_search(char** rulelist, char** headerlist)
   // printf("=========================================================== \n");
   sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
     + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
-  // printf("w = %d, n = %d, number of header = %d -- %f, %ld\n", _w, _n, _hn, sec_time_of_day, _compare_number_sequential_search);
   printf("Search Time : %f\n", sec_time_of_day);
+  printf("Total       : %ld\n", _compare_number_sequential_search);
 }
 
 unsigned simple_search(rbt** T, char* header, unsigned* A)

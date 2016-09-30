@@ -4,42 +4,54 @@
 
 int main(int argc, char** argv)
 {
+  char** rulelist;
+  char** headerlist;
+  rbt** T;
+  prbt** PT;
+  bool classbench_flag = false;
+
   /* check arguments */
-  {
-    if (!strcmp("-c",argv[1])) {
-      printf("rule has a field specified by a range\n");
-			char s[] = "67-75";
-			rangerule_to_01mlist(s,10,0,65535);
-      exit(1);
-    } else if (argc != 3) {
-      fprintf(stderr, "Usage: $./main <rule list> <pseudo packets>\n");
+  if (!strcmp("-c",argv[1])) { 
+    /* input rulelist format is class bench like format and separeted by 6 fields 
+       Source Address, Destination Address, Source Port, Destination Port, Protocol, Flag */
+    char s[] = "67-75";
+
+    classbench_flag = true;
+
+    range_to_01ms(3,17);
+    /* if ((headerlist = read_classbench_header_list(argv[3])) == NULL) { */
+    /*   fprintf(stderr, "Can't read an input header-list file\n"); */
+    /*   exit(1); */
+    /* } */
+    exit(1);
+
+  } else if (argc == 3) {
+    /* read rule-list and header-list files */
+    if ((rulelist = read_rule_list(argv[1])) == NULL) {
+      fprintf(stderr, "Can't read an input rule-list file\n");
+      return 1;
       exit(1);
     }
-  }
   
-  /* read rule-list and header-list files */
-  char** rulelist;
-  if ((rulelist = read_rule_list(argv[1])) == NULL) {
-    fprintf(stderr, "Can't read an input rule-list file\n");
-    return 1;
+    if ((headerlist = read_header_list(argv[2])) == NULL) {
+      fprintf(stderr, "Can't read an input header-list file\n");
+      exit(1);
+    }
+  
+    /* make a Run-Based Trie */
+    T = make_Run_Based_Trie(rulelist);
+  
+    /* make a Pointed Run-Based Trie */
+    PT = make_Pointed_Run_Based_Trie(rulelist);
+    // traverse_PRBT(PT);
+  } else {
+    fprintf(stderr, "Usage: $./main <rule list> <pseudo packets>\n");
     exit(1);
   }
-  
-  char** headerlist;
-  if ((headerlist = read_header_list(argv[2])) == NULL) {
-    fprintf(stderr, "Can't read an input header-list file\n");
-    exit(1);
-  }
-  
-  /* make a Run-Based Trie */
-  rbt** T = make_Run_Based_Trie(rulelist);
-  
-  /* make a Pointed Run-Based Trie */
-  prbt** PT = make_Pointed_Run_Based_Trie(rulelist);
-  // traverse_PRBT(PT);
   
   /* classify headers via a kind of methods */
-  do_sequential_search(rulelist, headerlist);
+  if (true == classbench_flag) ;
+  else do_sequential_search(rulelist, headerlist);
   putchar('\n');
   do_simple_search(T, headerlist);
   putchar('\n');
