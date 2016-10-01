@@ -4,42 +4,42 @@
 
 char* delete_space(char* h)
 {
-	unsigned i, j, l = strlen(h);
-	char* header = (char*)malloc(sizeof(char)*(_w+1));
-	i = j = 0;
-	while (i < l) {
-		if (' ' != h[i]) {
-			header[j] = h[i];
-			++j;
-		}
-		++i;
-	}
-	header[_w] = '\0';
-	// printf("%s\n", header);
-	free(h);
-	return header;
+  unsigned i, j, l = strlen(h);
+  char* header = (char*)malloc(sizeof(char)*(_w+1));
+  i = j = 0;
+  while (i < l) {
+    if (' ' != h[i]) {
+      header[j] = h[i];
+      ++j;
+    }
+    ++i;
+  }
+  header[_w] = '\0';
+  // printf("%s\n", header);
+  free(h);
+  return header;
 }
 
 unsigned get_header_length_in_classbench_format(char* header)
 {
-	char* copy = (char*)malloc(sizeof(char)*(strlen(header)));
-	strcpy(copy,header);
-	char* f;
-	unsigned w = 0;
+  char* copy = (char*)malloc(sizeof(char)*(strlen(header)));
+  strcpy(copy,header);
+  char* f;
+  unsigned w = 0;
 
-	f = strtok(copy, " ");
-	if (NULL != f)
-		w += strlen(f);
-	while (NULL != f) {
-		f = strtok(NULL, " ");
-		if (NULL != f) 
-				w += strlen(f);
-	}
-	--w; // for '\n'
+  f = strtok(copy, " ");
+  if (NULL != f)
+    w += strlen(f);
+  while (NULL != f) {
+    f = strtok(NULL, " ");
+    if (NULL != f) 
+      w += strlen(f);
+  }
+  --w; // for '\n'
 
-	free(copy);
+  free(copy);
 
-	return w;
+  return w;
 }
 
 char** read_classbench_header_list(char* header_file_name)
@@ -54,18 +54,18 @@ char** read_classbench_header_list(char* header_file_name)
   unsigned n = 0;
   unsigned w = 0;
 
-	getline(&line,&len,fp);
-	w = get_header_length_in_classbench_format(line);
+  getline(&line,&len,fp);
+  w = get_header_length_in_classbench_format(line);
 
   if (_w != w) {
     fprintf(stderr, "Rule length not equals to header length.\nCheck the input rule list file and header liest file.\n");
     exit(1);
   }
-	++n;
+  ++n;
   while (getline(&line, &len, fp) != -1) {
     ++n;
   }
-  // printf("n = %d\n", n);
+  // printf("w = %d, n = %d\n", w, n);
 
   /* allocate memory and make rulelist */
   char** headerlist = (char**)malloc(n*sizeof(char*));
@@ -73,8 +73,10 @@ char** read_classbench_header_list(char* header_file_name)
   {
     unsigned i = 0;
     while ((read = getline(&line, &len, fp)) != -1) {
-      headerlist[i] = (char*)malloc((_w+1)*sizeof(char));
-      strncpy(headerlist[i], delete_space(line), _w);
+      headerlist[i] = (char*)malloc((w+1)*sizeof(char));
+      line = delete_space(line);
+      strcpy(headerlist[i], line);
+      // printf("h[%d] = %s\n",i, headerlist[i]);
       ++i;
     }
   }
@@ -87,37 +89,37 @@ char** read_classbench_header_list(char* header_file_name)
 
 bool in_hyphen(char* rule)
 {
-	unsigned i, l = strlen(rule);
-	for (i = 0; i < l; ++i) 
-		if ('-' == rule[i])	
-			return true;
+  unsigned i, l = strlen(rule);
+  for (i = 0; i < l; ++i) 
+    if ('-' == rule[i])	
+      return true;
 
-	return false;
+  return false;
 }
 
 unsigned get_rule_length_in_bitstring_format(char* rule)
 {
-	char* copy = (char*)malloc(sizeof(char)*(strlen(rule)));
-	strcpy(copy,rule);
-	char* f;
-	unsigned w = 0;
+  char* copy = (char*)malloc(sizeof(char)*(strlen(rule)));
+  strcpy(copy,rule);
+  char* f;
+  unsigned w = 0;
 
-	f = strtok(copy, " ");
+  f = strtok(copy, " ");
+  w += strlen(f);
+  while (NULL != f) {
+    f = strtok(NULL, " ");
+    if (NULL != f) {
+      if (in_hyphen(f))
+	w += BIT_LENGTH;
+      else
 	w += strlen(f);
-	while (NULL != f) {
-		f = strtok(NULL, " ");
-		if (NULL != f) {
-			if (in_hyphen(f))
-				w += BIT_LENGTH;
-			else
-				w += strlen(f);
-		}
-	}
-	--w; // for '\n'
-	// printf("%d\n", w);
+    }
+  }
+  --w; // for '\n'
+  // printf("%d\n", w);
 
-	free(copy);
-	return w;
+  free(copy);
+  return w;
 }
 
 char** read_classbench_rule_list(char* rule_file_name)
@@ -132,19 +134,19 @@ char** read_classbench_rule_list(char* rule_file_name)
   unsigned n = 0;
   unsigned w = 0;
 
-	w = getline(&line,&len,fp)-1;
-	// printf("%d\n", w);
-	++n;
+  w = getline(&line,&len,fp)-1;
+  // printf("%d\n", w);
+  ++n;
   _w = get_rule_length_in_bitstring_format(line);
 
   while ((getline(&line, &len, fp)) != -1) {
-		//printf("%s",line);
+    //printf("%s",line);
     ++n;
   }
-	/*
-  printf("w = %d\n", w);
-  printf("n = %d\n", n);
-	*/
+  /*
+    printf("w = %d\n", w);
+    printf("n = %d\n", n);
+  */
 
   /* allocate memory and make rulelist */
   char** rulelist = (char**)malloc(n*sizeof(char*));

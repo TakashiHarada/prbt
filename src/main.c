@@ -17,16 +17,6 @@ int main(int argc, char** argv)
 
     classbench_flag = true;
 
-    /* char s[] = "0-4"; */
-    /* printf("%s\n", s); */
-    /* str_list* sl = range_to_01ms(s); */
-    /* str_list* it = sl; */
-    /* while (it != NULL) { */
-    /*   printf("%s\n", it->elem); */
-    /*   it = it->next; */
-    /* } */
-    /* free_strlist(sl); */
-
     if ((rulelist = read_classbench_rule_list(argv[2])) == NULL) {
       fprintf(stderr, "Can't read an input rule-list file\n");
       exit(1);
@@ -36,6 +26,7 @@ int main(int argc, char** argv)
       fprintf(stderr, "Can't read an input header-list file\n");
       exit(1);
     }
+
     exit(1);
     /* make a Run-Based Trie */
     T = make_Run_Based_Trie_in_classbench_format(rulelist);
@@ -84,10 +75,7 @@ int main(int argc, char** argv)
       // printf("%s\n",rulelist[i]);
       free(rulelist[i]);
     }
-  }
-  
-  {	
-    unsigned i;
+
     for (i = 0; i < _hn; ++i) {
       //printf("%s\n", headerlist[i]);
       free(headerlist[i]);
