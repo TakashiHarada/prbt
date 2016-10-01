@@ -22,6 +22,8 @@ struct sl {
 };
 typedef struct sl str_list;
 
+str_list* string_to_strings(char*);
+
 void free_strlist(str_list*);
 str_list* new_strlist(char*);
 str_list* int_pair_to_01m(unsigned, unsigned, unsigned);

@@ -2,6 +2,28 @@
 
 #include <tools.h>
 
+/* "aa bb cc" => ptr->"aa"->"bb"->"cc"->NULL */
+str_list* string_to_strings(char* rule)
+{
+  str_list* strings = NULL;
+
+  char* copy = (char*)malloc(sizeof(char)*(strlen(rule)));
+  strcpy(copy,rule);
+  char* f;
+
+  f = strtok(copy, " ");
+  strings = concat_strlist(strings,new_strlist(f));
+  while (NULL != f) {
+    f = strtok(NULL, " ");
+    if (NULL != f) {
+	strings = concat_strlist(strings,new_strlist(f));
+    }
+  }
+
+  free(copy);
+  return strings;
+}
+
 str_list* concat_strlist(str_list* s, str_list* t)
 {
   if (NULL == s) {

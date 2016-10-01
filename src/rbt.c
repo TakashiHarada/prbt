@@ -200,6 +200,48 @@ rbt** make_Run_Based_Trie(char** rulelist)
   return T;
 }
 
+rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
+{
+  _number_of_rbt_node = 0;
+  rbt** T = (rbt**)malloc(_w*sizeof(rbt*));
+  /* make a root nodes T[0], T[1], ..., T[w-1] */
+  {	
+    unsigned i;
+    for (i = 0; i < _w; ++i) {
+      T[i] = make_RBT_node('_');
+      ++_number_of_rbt_node;
+    }
+  }
+
+  /* cut run from a rule and add it to an appropriate Trie */
+  { 
+    unsigned i;
+    char copy[_w+1];
+    for (i = 0; i < _n; ++i) {
+      strcpy(copy,rulelist[i]);
+      /* if (in_hyphen(copy)) { */
+      /* 	runlist* runs = cut_run(copy); */
+      /* 	add_rule_number(runs, i+1); */
+      /* 	runlist* ptr = runs; */
+      /* 	while (ptr != NULL) { */
+      /* 	  //printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
+      /* 	  traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run); */
+      /* 	  ptr = ptr->next; */
+      /* 	} */
+      /* 	//putchar('\n'); */
+      /* 	free_runlist(runs); */
+      /* } */
+      /* else { */
+      /* 	; */
+      /* } */
+    }
+  }
+
+  printf("A number of Nodes of RBT = %d\n", _number_of_rbt_node);
+  printf("A number of Runs  of RBT = %d\n\n", _number_of_run_of_rbt);
+  return T;
+}
+
 void free_traverse_RBT(rbt* T)
 {
   if (NULL == T) { return; }

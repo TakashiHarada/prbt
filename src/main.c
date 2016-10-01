@@ -27,8 +27,17 @@ int main(int argc, char** argv)
       exit(1);
     }
 
-    exit(1);
+    /* printf("%s\n", rulelist[0]); */
+    /* str_list* ptr = string_to_strings(rulelist[0]); */
+    /* str_list* it = ptr; */
+    /* while (NULL != it) { */
+    /*   printf("%s\n", it->elem); */
+    /*   it = it->next; */
+    /* } */
+    /* free_strlist(ptr); */
+
     /* make a Run-Based Trie */
+    exit(1);
     T = make_Run_Based_Trie_in_classbench_format(rulelist);
   
     /* make a Pointed Run-Based Trie */

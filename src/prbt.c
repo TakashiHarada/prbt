@@ -197,7 +197,8 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
   }
 
   /* at first, make a Run-Based Trie. This is a base of Pointed Run-Based Trie  */
-  {	unsigned i;
+  {	
+    unsigned i;
     char copy[_w+1];
     for (i = 0; i < _n; ++i) {
       strcpy(copy, rulelist[i]);
