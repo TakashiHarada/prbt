@@ -18,7 +18,12 @@ int main(int argc, char** argv)
 
     classbench_flag = true;
 
-    range_to_01ms(3,17);
+    str_list* sl = range_to_01ms(3,17);
+    str_list* it = sl;
+    while (it != NULL) {
+      printf("%s\n", it->elem);
+      it = it->next;
+    }
     /* if ((headerlist = read_classbench_header_list(argv[3])) == NULL) { */
     /*   fprintf(stderr, "Can't read an input header-list file\n"); */
     /*   exit(1); */
