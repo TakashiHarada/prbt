@@ -4,37 +4,51 @@
 
 int main(int argc, char** argv)
 {
-  char** rulelist;
-  char** headerlist;
-  rbt** T;
-  prbt** PT;
+  char** rulelist = NULL;
+  char** headerlist = NULL;
+  rbt** T = NULL;
+  prbt** PT = NULL;
   bool classbench_flag = false;
 
   /* check arguments */
   if (!strcmp("-c",argv[1])) { 
-    /* input rulelist format is class bench like format and separeted by 6 fields 
+    /* each rule of the input rulelist format is class bench like format and separated by 6 fields 
        Source Address, Destination Address, Source Port, Destination Port, Protocol, Flag */
-    char s[] = "67-75";
 
     classbench_flag = true;
 
-    str_list* sl = range_to_01ms(3,17);
-    str_list* it = sl;
-    while (it != NULL) {
-      printf("%s\n", it->elem);
-      it = it->next;
-    }
-    /* if ((headerlist = read_classbench_header_list(argv[3])) == NULL) { */
-    /*   fprintf(stderr, "Can't read an input header-list file\n"); */
-    /*   exit(1); */
+    /* char s[] = "0-4"; */
+    /* printf("%s\n", s); */
+    /* str_list* sl = range_to_01ms(s); */
+    /* str_list* it = sl; */
+    /* while (it != NULL) { */
+    /*   printf("%s\n", it->elem); */
+    /*   it = it->next; */
     /* } */
+    /* free_strlist(sl); */
+
+    if ((rulelist = read_classbench_rule_list(argv[2])) == NULL) {
+      fprintf(stderr, "Can't read an input rule-list file\n");
+      exit(1);
+    }
+
+    if ((headerlist = read_classbench_header_list(argv[3])) == NULL) {
+      fprintf(stderr, "Can't read an input header-list file\n");
+      exit(1);
+    }
     exit(1);
+    /* make a Run-Based Trie */
+    T = make_Run_Based_Trie_in_classbench_format(rulelist);
+  
+    /* make a Pointed Run-Based Trie */
+    PT = make_Pointed_Run_Based_Trie_in_classbench_format(rulelist);
+    // traverse_PRBT(PT);
 
   } else if (argc == 3) {
+    /* each rule of the input rule-list is continuous, not separated by fields */
     /* read rule-list and header-list files */
     if ((rulelist = read_rule_list(argv[1])) == NULL) {
       fprintf(stderr, "Can't read an input rule-list file\n");
-      return 1;
       exit(1);
     }
   
@@ -55,7 +69,7 @@ int main(int argc, char** argv)
   }
   
   /* classify headers via a kind of methods */
-  if (true == classbench_flag) ;
+  if (true == classbench_flag) ; // do_classbench_sequential_search(rulelist, headerlist);
   else do_sequential_search(rulelist, headerlist);
   putchar('\n');
   do_simple_search(T, headerlist);

@@ -11,7 +11,16 @@
 #include <const.h>
 #endif
 
+struct range_rule {
+	unsigned number;
+	char** f;
+};
+typedef struct range_rule rrule;
+
+unsigned get_header_length_in_bitstring_format(char*);
 char** read_classbench_header_list(char*);
+bool in_hyphen(char*);
+unsigned get_rule_length_in_bitstring_format(char*);
 char** read_classbench_rule_list(char*);
 char** read_header_list(char*);
 char** read_rule_list(char*);
