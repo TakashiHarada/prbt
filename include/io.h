@@ -12,8 +12,8 @@
 #endif
 
 struct range_rule {
-	unsigned number;
-	char** f;
+  unsigned number;
+  str_list** f;
 };
 typedef struct range_rule rrule;
 

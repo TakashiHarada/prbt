@@ -48,4 +48,10 @@ void do_pointer_search(prbt*, char**);
 void do_simple_search(rbt**, char**);
 void do_sequential_search(char **, char**);
 
+
+rrule* convert_string_to_rrule(char*, unsigned);
+bool classbench_compare(rrule*, char*, unsigned*, unsigned*);
+unsigned classbench_sequential_search(rrule**, char*, unsigned*, unsigned*);
+void do_classbench_sequential_search(char**, char**);
+
 #endif

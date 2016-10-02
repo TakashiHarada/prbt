@@ -2,6 +2,41 @@
 
 #include <tools.h>
 
+unsigned sizeofstrlist(str_list* sl)
+{
+  unsigned i = 0;
+  str_list* it;
+  for (it = sl; NULL != it; it = it->next)
+    ++i;
+
+  return i;
+}
+
+str_list* delete_newline_strlist(str_list* sl)
+{
+  str_list *it, *it2;
+  if (!strcmp("\n", sl->elem)) {
+    it = sl;
+    sl = sl->next;
+    free(it);
+    return sl;
+  }
+  
+  it = sl;
+  while (NULL != it) {
+    it2 = it;
+    it = it->next;
+    if (NULL != it) {
+      if(!strcmp("\n", it->elem)) {
+	it2->next = it->next;
+	free(it);
+      }
+    }
+  }
+
+  return sl;
+}
+
 str_list* delete_strlist_element(str_list* strings, str_list* deleted)
 {
   str_list *it, *it2;

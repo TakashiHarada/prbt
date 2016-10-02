@@ -169,7 +169,7 @@ unsigned pointer_search(prbt* PT, char* header, unsigned* A)
 
   //printf("%s --> %2d\n", header, candidate);
   return candidate;
- }
+}
 
 void do_pointer_search(prbt* PT, char** headerlist)
 {
@@ -222,4 +222,149 @@ void count_run_number_on_rule_in_rulelist(char** rulelist, unsigned* R)
   for (i = 1; i <= _n; ++i)
     R[i] = count_run_number(rulelist[i-1]);
   //printf("%s %d\n", rulelist[i-1], R[i]);
+}
+
+bool classbench_compare(rrule* rule, char* header, unsigned* len, unsigned* start)
+{
+  unsigned i, j, k, h;
+  str_list* it;
+
+  for (i = 0; i < 2; ++i) {
+    it = (rule->f)[i];
+    j = 0;
+    h = start[i];
+    k = h + len[i];
+    while (h < k) {
+      ++_compare_number_sequential_search;
+      if (it->elem[j] != header[h] && it->elem[j] != '*') // ここの比較回数を数える
+	return false;
+      ++j;
+      ++h;
+    }
+  }
+
+  /* here, check the range rule [a,b] */
+  bool flag = true;
+  for (i = 2; i < 4; ++i) {
+    it = (rule->f)[i];
+    while (NULL != it) {
+      j = 0;
+      h = start[i];
+      k = h + len[i];
+      while (h < k) {
+	++_compare_number_sequential_search;
+	if (it->elem[j] != header[h] && it->elem[j] != '*') // ここの比較回数を数える
+	  break;
+	++j;
+	++h;
+      }
+      if (h == k) {
+	flag = false;
+	break;
+      }
+      it = it->next;
+    }
+  }
+
+  if (flag)
+    return false;
+
+  for (i = 4; i < _d; ++i) {
+    it = (rule->f)[i];
+    j = 0;
+    h = start[i];
+    k = h + len[i];
+    while (h < k) {
+      ++_compare_number_sequential_search;
+      if (it->elem[j] != header[h] && it->elem[j] != '*') // ここの比較回数を数える
+	return false;
+      ++h;
+      ++j;
+    }
+  }
+
+  return true;
+}
+
+unsigned classbench_sequential_search(rrule** rulelist, char* header, unsigned* len, unsigned* start)
+{
+  unsigned i;
+  for (i = 0; i < _n; ++i)
+    if (classbench_compare(rulelist[i], header, len, start))
+      break;
+
+  printf("%s --> %3d\n", header, i+1);
+  return i+1;
+}
+
+rrule* convert_string_to_rrule(char* r, unsigned rule_number)
+{
+  // printf("R[%d]: %s\n", rule_number, r);
+  rrule* rule = (rrule*)malloc(sizeof(rrule*));
+  rule->number = rule_number;
+
+  str_list *sl = string_to_strings(r);
+  sl = delete_newline_strlist(sl);
+  unsigned d = sizeofstrlist(sl);
+  _d = d;
+  rule->f = (str_list**)malloc(d*sizeof(str_list*));
+
+  str_list* it = sl;
+  unsigned i = 0;
+  while (NULL != it) {
+    // printf("[%s]\n", it->elem);
+    if (in_hyphen(it->elem)) {
+      (rule->f)[i] = range_to_01ms(it->elem);
+    } else {
+      (rule->f)[i] = new_strlist(it->elem);
+    }
+    it = it->next;
+    ++i;
+  }
+
+  /* for (i = 0; i < _d; ++i) { */
+  /*   it = (rule->f)[i]; */
+  /*   while (NULL != it) { */
+  /*     printf("f[%d] = [%s]\n", i, it->elem); */
+  /*     it = it->next; */
+  /*   } */
+  /* } */
+
+  /* printf("hoge\n"); */
+  free_strlist(sl);
+
+  return rule;
+}
+
+rrule** make_classbench_rulelist(char** rulelist)
+{
+  unsigned i;
+  rrule** list = (rrule**)malloc(sizeof(rrule*)*_n);
+
+  for (i = 0; i < _n; ++i)
+    list[i] = convert_string_to_rrule(rulelist[i],i+1);
+  return list;
+}
+
+void do_classbench_sequential_search(char** rulelist, char** headerlist)
+{
+  printf("==================== Sequential Search ==================== \n");
+  struct timeval start_time, end_time;
+  double sec_time_of_day;
+  unsigned i;
+  rrule** rrulelist = make_classbench_rulelist(rulelist); // convert string to range rule
+  _compare_number_sequential_search = 0;
+
+  unsigned len[] = { 32, 32, 16, 16, 8, 16 }; // ここを求めるプログラムが必要
+  unsigned start[] = { 0, 32, 64, 80, 96, 104, 120 }; // ここを求めるプログラムが必要
+
+  gettimeofday(&start_time, NULL);
+  for (i = 0; i < _hn; ++i)
+    classbench_sequential_search(rrulelist, headerlist[i], len, start);
+  gettimeofday(&end_time, NULL);
+  // printf("=========================================================== \n");
+  sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
+    + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
+  printf("Search Time : %f\n", sec_time_of_day);
+  printf("Total       : %ld\n", _compare_number_sequential_search);
 }

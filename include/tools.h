@@ -17,11 +17,13 @@ typedef enum { false, true } bool; /* not needed for C++ */
 #endif
 
 struct sl {
-	char* elem;
-	struct sl* next;
+  char* elem;
+  struct sl* next;
 };
 typedef struct sl str_list;
 
+unsigned sizeofstrlist(str_list*);
+str_list* delete_newline_strlist(str_list*);
 str_list* string_to_strings(char*);
 
 void free_strlist(str_list*);
