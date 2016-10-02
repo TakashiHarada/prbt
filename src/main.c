@@ -39,8 +39,9 @@ int main(int argc, char** argv)
     /* make a Run-Based Trie */
 
     T = make_Run_Based_Trie_in_classbench_format(rulelist);
-    //do_simple_search(T, headerlist);
-    //putchar('\n');
+    do_simple_search(T, headerlist);
+    free_RBT(T);
+    putchar('\n');
 
     exit(1);  
     /* make a Pointed Run-Based Trie */

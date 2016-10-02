@@ -106,7 +106,14 @@ unsigned get_rule_length_in_bitstring_format(char* rule)
 
   f = strtok(copy, " ");
   w += strlen(f);
+  if (NULL != f)
+    if ('\n' == f[strlen(f)-1])
+      --w;
+
   while (NULL != f) {
+    if (NULL != f)
+      if ('\n' == f[strlen(f)-1])
+	--w;
     f = strtok(NULL, " ");
     if (NULL != f) {
       if (in_hyphen(f))
@@ -115,8 +122,7 @@ unsigned get_rule_length_in_bitstring_format(char* rule)
 	w += strlen(f);
     }
   }
-  --w; // for '\n'
-  // printf("%d\n", w);
+  // printf("w = %d\n", w);
 
   free(copy);
   return w;

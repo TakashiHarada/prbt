@@ -200,6 +200,31 @@ rbt** make_Run_Based_Trie(char** rulelist)
   return T;
 }
 
+runlist* delete_newline_element(runlist* runs)
+{
+  runlist *it, *it2;
+  if (!strcmp("\n",runs->run.run)) {
+    it = runs;
+    runs = runs->next;
+    free(it);
+    return runs;
+  }
+
+  it = runs;
+  while (NULL != it) {
+    it2 = it;
+    it = it->next;
+    if (NULL != it) {
+      if (!strcmp("\n",it->run.run)) {
+	it2->next = it->next;
+	//free(it);
+      }
+    }
+  }
+
+  return runs;
+}
+
 void set_run_number(run* r, unsigned i)
 {
   r->run_num = i;
@@ -303,7 +328,7 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
       sl = string_to_strings(copy);
       it = sl;
       run_counter = 0;
-      printf("%s\n", rulelist[i]);
+      // printf("%s\n", rulelist[i]);
       runs = NULL;
       sp = 0;
       while (NULL != it) {
@@ -328,10 +353,14 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
       }
       add_rule_number(runs, i+1);
       ptr = runs;
+      runs = delete_newline_element(runs);
+      add_terminal_mark(runs);
       while (ptr != NULL) {
-	if (strcmp("\n",ptr->run.run))
-	  traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
-	//printf("[str = %32s i = %3d rule = %3d run = %2d ]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
+	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+	/* if (ptr->run.terminal) */
+	/*   printf("[str = %32s i = %3d rule = %3d run = %2d  true]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
+	/* else */
+	/*   printf("[str = %32s i = %3d rule = %3d run = %2d false]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
       	ptr = ptr->next;
       }
       free_runlist(runs);
@@ -372,7 +401,7 @@ void free_RBT(rbt** T)
 {
   { unsigned i;
     for (i = 0; i < _w; ++i) {
-      printf("===== free T[%2d] =====\n", i);
+      // printf("===== free T[%2d] =====\n", i);
       free_traverse_RBT(T[i]);
     }
   }
