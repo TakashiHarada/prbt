@@ -236,7 +236,7 @@ bool classbench_compare(rrule* rule, char* header, unsigned* len, unsigned* star
     while (h < k) {
       ++_compare_number_sequential_search;
       if (it->elem[j] != header[h] && it->elem[j] != '*') { // ここの比較回数を数える
-	printf("it->elem[%d] = %c, header[%d] = %c\n", j, it->elem[j], h, header[h]);
+	//printf("it->elem[%d] = %c, header[%d] = %c\n", j, it->elem[j], h, header[h]);
 	return false;
       }
       ++j;
@@ -344,16 +344,16 @@ rrule** make_classbench_rulelist(char** rulelist)
   for (i = 0; i < _n; ++i) {
     // printf("Rule[%d] = %s\n", i, rulelist[i]);
     list[i] = convert_string_to_rrule(rulelist[i],i+1);
-    unsigned j;
-    str_list* it;
-    for (j = 0; j < _d; ++j) {
-      it = (list[i]->f)[j];
-      while (NULL != it) {
-    	printf("R[%d]-f[%d] = [%s]\n", i, j, it->elem);
-    	it = it->next;
-      }
-    }
-    putchar('\n');
+    /* unsigned j; */
+    /* str_list* it; */
+    /* for (j = 0; j < _d; ++j) { */
+    /*   it = (list[i]->f)[j]; */
+    /*   while (NULL != it) { */
+    /* 	printf("R[%d]-f[%d] = [%s]\n", i, j, it->elem); */
+    /* 	it = it->next; */
+    /*   } */
+    /* } */
+    /* putchar('\n'); */
   }
   return list;
 }
@@ -367,18 +367,18 @@ void do_classbench_sequential_search(char** rulelist, char** headerlist)
   rrule** rrulelist = make_classbench_rulelist(rulelist); // convert string to range rule
   _compare_number_sequential_search = 0;
 
-  for (i = 0; i < _n; ++i) {
-    unsigned j;
-    str_list* it;
-    for (j = 0; j < _d; ++j) {
-      it = (rrulelist[i]->f)[j];
-      while (NULL != it) {
-    	printf("R[%d]-f[%d] = [%s]\n", i,j, it->elem);
-    	it = it->next;
-      }
-    }
-    putchar('\n');
-  }
+  /* for (i = 0; i < _n; ++i) { */
+  /*   unsigned j; */
+  /*   str_list* it; */
+  /*   for (j = 0; j < _d; ++j) { */
+  /*     it = (rrulelist[i]->f)[j]; */
+  /*     while (NULL != it) { */
+  /*   	printf("R[%d]-f[%d] = [%s]\n", i,j, it->elem); */
+  /*   	it = it->next; */
+  /*     } */
+  /*   } */
+  /*   putchar('\n'); */
+  /* } */
 
   unsigned len[] = { 32, 32, 16, 16, 8, 16 }; // ここを求めるプログラムが必要
   unsigned start[] = { 0, 32, 64, 80, 96, 104, 120 }; // ここを求めるプログラムが必要
