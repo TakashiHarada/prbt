@@ -89,6 +89,7 @@ int main(int argc, char** argv)
       free(headerlist[i]);
     }
   }
+
   free(rulelist);
   free(headerlist);
   

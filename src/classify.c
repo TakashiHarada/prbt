@@ -184,8 +184,8 @@ void do_pointer_search(prbt* PT, char** headerlist)
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
-    pointer_search(PT, headerlist[i], A);
-    //printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
+    //pointer_search(PT, headerlist[i], A);
+    printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   // printf("===========================================================\n");
@@ -234,19 +234,23 @@ bool classbench_compare(rrule* rule, char* header, unsigned* len, unsigned* star
     j = 0;
     h = start[i];
     k = h + len[i];
+    // printf("len[%d] = %d, start[%d] = %d\n", i, len[i], i, start[i]);
     while (h < k) {
       ++_compare_number_sequential_search;
-      if (it->elem[j] != header[h] && it->elem[j] != '*') // ここの比較回数を数える
+      if (it->elem[j] != header[h] && it->elem[j] != '*') { // ここの比較回数を数える
+	printf("it->elem[%d] = %c, header[%d] = %c\n", j, it->elem[j], h, header[h]);
 	return false;
+      }
       ++j;
       ++h;
     }
   }
 
   /* here, check the range rule [a,b] */
-  bool flag = true;
+  bool flag;
   for (i = 2; i < 4; ++i) {
     it = (rule->f)[i];
+    flag = true;
     while (NULL != it) {
       j = 0;
       h = start[i];
@@ -264,10 +268,9 @@ bool classbench_compare(rrule* rule, char* header, unsigned* len, unsigned* star
       }
       it = it->next;
     }
+    if (flag)
+      return false;
   }
-
-  if (flag)
-    return false;
 
   for (i = 4; i < _d; ++i) {
     it = (rule->f)[i];
@@ -330,7 +333,6 @@ rrule* convert_string_to_rrule(char* r, unsigned rule_number)
   /*   } */
   /* } */
 
-  /* printf("hoge\n"); */
   free_strlist(sl);
 
   return rule;
@@ -341,8 +343,19 @@ rrule** make_classbench_rulelist(char** rulelist)
   unsigned i;
   rrule** list = (rrule**)malloc(sizeof(rrule*)*_n);
 
-  for (i = 0; i < _n; ++i)
+  for (i = 0; i < _n; ++i) {
+    // printf("Rule[%d] = %s\n", i, rulelist[i]);
     list[i] = convert_string_to_rrule(rulelist[i],i+1);
+    /* unsigned j; */
+    /* str_list* it; */
+    /* for (j = 0; j < _d; ++j) { */
+    /*   it = (list[i]->f)[j]; */
+    /*   while (NULL != it) { */
+    /* 	printf("f[%d] = [%s]\n", j, it->elem); */
+    /* 	it = it->next; */
+    /*   } */
+    /* } */
+  }
   return list;
 }
 
@@ -354,6 +367,18 @@ void do_classbench_sequential_search(char** rulelist, char** headerlist)
   unsigned i;
   rrule** rrulelist = make_classbench_rulelist(rulelist); // convert string to range rule
   _compare_number_sequential_search = 0;
+
+  for (i = 0; i < _n; ++i) {
+    unsigned j;
+    str_list* it;
+    for (j = 0; j < _d; ++j) {
+      it = (rrulelist[i]->f)[j];
+      while (NULL != it) {
+    	printf("f[%d] = [%s]\n", j, it->elem);
+    	it = it->next;
+      }
+    }
+  }
 
   unsigned len[] = { 32, 32, 16, 16, 8, 16 }; // ここを求めるプログラムが必要
   unsigned start[] = { 0, 32, 64, 80, 96, 104, 120 }; // ここを求めるプログラムが必要

@@ -186,7 +186,7 @@ rbt** make_Run_Based_Trie(char** rulelist)
       add_rule_number(runs, i+1);
       runlist* ptr = runs;
       while (ptr != NULL) {
-	//printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
+	// printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
 	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
 	ptr = ptr->next;
       }
@@ -317,10 +317,12 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
     }
   }
 
+
+
   /* cut run from a rule and add it to an appropriate Trie */
   { 
     unsigned i, l, run_counter, sp;
-    char copy[_w+1];
+    char copy[_capacity+1];
     str_list *sl, *sl2, *it, *it2;
     runlist *runs, *tmp, *ptr;
     for (i = 0; i < _n; ++i) {
@@ -352,15 +354,15 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
 	it = it->next;
       }
       add_rule_number(runs, i+1);
-      ptr = runs;
       runs = delete_newline_element(runs);
-      add_terminal_mark(runs);
+      add_terminal_mark(runs); // 最後の連が複数ある場合に対してデバッグが必要 20161002
+      ptr = runs;
       while (ptr != NULL) {
-	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
-	/* if (ptr->run.terminal) */
-	/*   printf("[str = %32s i = %3d rule = %3d run = %2d  true]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
-	/* else */
-	/*   printf("[str = %32s i = %3d rule = %3d run = %2d false]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
+      	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+      	/* if (ptr->run.terminal) */
+      	/*   printf("[str = %32s i = %3d rule = %3d run = %2d  true]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
+      	/* else */
+      	/*   printf("[str = %32s i = %3d rule = %3d run = %2d false]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
       	ptr = ptr->next;
       }
       free_runlist(runs);
