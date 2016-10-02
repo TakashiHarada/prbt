@@ -79,15 +79,14 @@ str_list* string_to_strings(char* rule)
   strcpy(copy,rule);
   char* f;
 
-  f = strtok(copy, " ");
+  f = strtok(copy, " \n");
   strings = concat_strlist(strings,new_strlist(f));
   while (NULL != f) {
-    f = strtok(NULL, " ");
+    f = strtok(NULL, " \n");
     if (NULL != f) {
       strings = concat_strlist(strings,new_strlist(f));
     }
   }
-
   free(copy);
   return strings;
 }

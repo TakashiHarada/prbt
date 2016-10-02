@@ -25,13 +25,11 @@ unsigned sequential_search(char** rulelist, char* header)
   // printf("%s --> %2d\n", header, i+1);
   return i+1;
   
-  /*	
-	char defaultrule[_w+1];
-	unsigned j;
-	for (j = 0; j < _w; ++j)
-  	defaultrule[j] = '*';
-  	defaultrule[_w] = '\0';
-  */
+  /* char defaultrule[_w+1]; */
+  /* unsigned j; */
+  /* for (j = 0; j < _w; ++j) */
+  /*   defaultrule[j] = '*'; */
+  /* defaultrule[_w] = '\0'; */
 
   /*
     if (i != _n)
@@ -346,15 +344,16 @@ rrule** make_classbench_rulelist(char** rulelist)
   for (i = 0; i < _n; ++i) {
     // printf("Rule[%d] = %s\n", i, rulelist[i]);
     list[i] = convert_string_to_rrule(rulelist[i],i+1);
-    /* unsigned j; */
-    /* str_list* it; */
-    /* for (j = 0; j < _d; ++j) { */
-    /*   it = (list[i]->f)[j]; */
-    /*   while (NULL != it) { */
-    /* 	printf("f[%d] = [%s]\n", j, it->elem); */
-    /* 	it = it->next; */
-    /*   } */
-    /* } */
+    unsigned j;
+    str_list* it;
+    for (j = 0; j < _d; ++j) {
+      it = (list[i]->f)[j];
+      while (NULL != it) {
+    	printf("R[%d]-f[%d] = [%s]\n", i, j, it->elem);
+    	it = it->next;
+      }
+    }
+    putchar('\n');
   }
   return list;
 }
@@ -374,10 +373,11 @@ void do_classbench_sequential_search(char** rulelist, char** headerlist)
     for (j = 0; j < _d; ++j) {
       it = (rrulelist[i]->f)[j];
       while (NULL != it) {
-    	printf("f[%d] = [%s]\n", j, it->elem);
+    	printf("R[%d]-f[%d] = [%s]\n", i,j, it->elem);
     	it = it->next;
       }
     }
+    putchar('\n');
   }
 
   unsigned len[] = { 32, 32, 16, 16, 8, 16 }; // ここを求めるプログラムが必要

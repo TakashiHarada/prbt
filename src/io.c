@@ -141,11 +141,12 @@ char** read_classbench_rule_list(char* rule_file_name)
   unsigned w = 0;
 
   w = getline(&line,&len,fp)-1;
-  // printf("%d\n", w);
   ++n;
   _w = get_rule_length_in_bitstring_format(line);
 
-  while ((getline(&line, &len, fp)) != -1) {
+  while ((read = (getline(&line, &len, fp))) != -1) {
+    if (read > w)
+      w = read;
     //printf("%s",line);
     ++n;
   }
@@ -154,6 +155,7 @@ char** read_classbench_rule_list(char* rule_file_name)
     printf("n = %d\n", n);
   */
 
+  _capacity = w;
   /* allocate memory and make rulelist */
   char** rulelist = (char**)malloc(n*sizeof(char*));
   rewind(fp);
