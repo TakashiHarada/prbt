@@ -329,13 +329,14 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
       add_rule_number(runs, i+1);
       ptr = runs;
       while (ptr != NULL) {
-      	// printf("[str = %4s i = %d rule = %2d run = %d ]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
-      	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+	if (strcmp("\n",ptr->run.run))
+	  traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+	//printf("[str = %32s i = %3d rule = %3d run = %2d ]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
       	ptr = ptr->next;
       }
       free_runlist(runs);
       free_strlist(sl);
-      putchar('\n');
+      // putchar('\n');
     }
   }
 

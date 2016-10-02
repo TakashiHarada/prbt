@@ -2,6 +2,39 @@
 
 #include <tools.h>
 
+str_list* delete_strlist_element(str_list* strings, str_list* deleted)
+{
+  str_list *it, *it2;
+  if (strings == deleted) {
+    it = strings->next;
+    free(strings);
+    return it;
+  }
+
+  it = strings;  
+  while (NULL != it) {
+    it2 = it;
+    if (it == deleted) {
+      it2->next = it->next;
+      //free(it->elem);
+      //free(it);
+      break;
+    }
+    it = it->next;
+  }
+
+  return strings;
+}
+
+bool in_newline(char* s)
+{
+  unsigned i, l = strlen(s);
+  for (i = 0; i < l; ++i)
+    if ('\n' == s[i])
+      return true;
+  return false;
+}
+
 /* "aa bb cc" => ptr->"aa"->"bb"->"cc"->NULL */
 str_list* string_to_strings(char* rule)
 {
@@ -16,7 +49,7 @@ str_list* string_to_strings(char* rule)
   while (NULL != f) {
     f = strtok(NULL, " ");
     if (NULL != f) {
-	strings = concat_strlist(strings,new_strlist(f));
+      strings = concat_strlist(strings,new_strlist(f));
     }
   }
 
