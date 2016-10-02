@@ -200,6 +200,85 @@ rbt** make_Run_Based_Trie(char** rulelist)
   return T;
 }
 
+void set_run_number(run* r, unsigned i)
+{
+  r->run_num = i;
+}
+
+bool check_whether_all_mask_rule(char* rule)
+{
+  unsigned i, l = strlen(rule);
+  for (i = 0; i < l; ++i)
+    if (rule[i] != '*')
+      return false;
+  return true;
+}
+
+runlist* concat_runlist(runlist* s, runlist* t)
+{
+   if (NULL == s) {
+    if (NULL == t)	// s = NULL and t = NULL (0,0)
+      return NULL;
+    else	// s = NULL and t /= NULL (0,1)
+      return t;
+  }
+  else if (NULL == t) {	// s /= NULL and t = NULL (1,0)
+    return s;
+  }
+
+  // s /= NULL and t /= NULL (1,1)
+  runlist* it = s;
+  while (NULL != it->next)
+    it = it->next;
+  it->next = t;
+
+  return s;
+}
+
+runlist* get_run_from_classbench_field(char* field, unsigned* run_counter, unsigned run_start_point)
+{
+  if (check_whether_all_mask_rule(field))
+    return NULL;
+
+  runlist* rs = NULL;
+  unsigned l = strlen(field);
+
+  unsigned i;
+  int s = -1, t = -1;
+  bool sign = false;
+  char* buf = (char*)malloc(sizeof(char)*(1+_w));
+  // printf("%s : ", field);
+
+  for (i = 0; i < l; ++i) {
+    if ('*' != field[i]) {
+      if (!sign) {
+	s = i+1;
+	++(*run_counter);
+	sign = true;
+      }
+    }
+    else if (sign) {
+      t = i;
+      strncpy(buf, field+s-1, t-s+1);
+      buf[t-s+1] = '\0';
+      /* index start from 0. T[0], T[1], ... , T[w-1] */
+      rs = add_run(rs, buf, (*run_counter), s+run_start_point);
+      // printf("%s (%d)", buf, s+run_start_point-1);
+      sign = false;
+    }
+  }
+  if (sign) {
+    strncpy(buf, field+s-1, _w-s+1);
+    buf[_w-s+1] = '\0';
+    rs = add_run(rs, buf, (*run_counter), s+run_start_point);
+    // printf("%s (%d)", buf, s+run_start_point-1);
+  }
+  free(buf);
+  // putchar('\n');
+
+  return rs;
+}
+
 rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
 {
   _number_of_rbt_node = 0;
@@ -215,25 +294,48 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
 
   /* cut run from a rule and add it to an appropriate Trie */
   { 
-    unsigned i;
+    unsigned i, l, run_counter, sp;
     char copy[_w+1];
+    str_list *sl, *sl2, *it, *it2;
+    runlist *runs, *tmp, *ptr;
     for (i = 0; i < _n; ++i) {
       strcpy(copy,rulelist[i]);
-      /* if (in_hyphen(copy)) { */
-      /* 	runlist* runs = cut_run(copy); */
-      /* 	add_rule_number(runs, i+1); */
-      /* 	runlist* ptr = runs; */
-      /* 	while (ptr != NULL) { */
-      /* 	  //printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
-      /* 	  traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run); */
-      /* 	  ptr = ptr->next; */
-      /* 	} */
-      /* 	//putchar('\n'); */
-      /* 	free_runlist(runs); */
-      /* } */
-      /* else { */
-      /* 	; */
-      /* } */
+      sl = string_to_strings(copy);
+      it = sl;
+      run_counter = 0;
+      printf("%s\n", rulelist[i]);
+      runs = NULL;
+      sp = 0;
+      while (NULL != it) {
+	// printf("%d %s\n", run_counter, it->elem);
+	l = strlen(it->elem);
+	if (in_hyphen(it->elem)) {
+	  it2 = sl2 = range_to_01ms(it->elem);
+	  while (NULL != it2) {
+	    tmp = get_run_from_classbench_field(it2->elem, &run_counter, sp);
+	    if (NULL != tmp && NULL != it2->next)
+	      --run_counter;
+	    runs = concat_runlist(runs, tmp);
+	    it2 = it2->next;
+	  }
+	  free_strlist(sl2);
+	  sp += BIT_LENGTH;
+	} else {
+	  runs = concat_runlist(runs, get_run_from_classbench_field(it->elem, &run_counter, sp));
+	  sp += l;
+	}
+	it = it->next;
+      }
+      add_rule_number(runs, i+1);
+      ptr = runs;
+      while (ptr != NULL) {
+      	// printf("[str = %4s i = %d rule = %2d run = %d ]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
+      	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+      	ptr = ptr->next;
+      }
+      free_runlist(runs);
+      free_strlist(sl);
+      putchar('\n');
     }
   }
 
@@ -252,7 +354,7 @@ void free_traverse_RBT(rbt* T)
     runlist* ptr = T->rs;
     runlist* ptr2;
     while (NULL != ptr) {
-      //printf("free run (%4s, %2d, %d)\n", ptr->run.run, ptr->run.rule_num, ptr->run.run_num);
+      // printf("free run (%s, %2d, %d)\n", ptr->run.run, ptr->run.rule_num, ptr->run.run_num);
       ptr2 = ptr;
       ptr = ptr->next;
       free(ptr2);
@@ -269,6 +371,7 @@ void free_RBT(rbt** T)
 {
   { unsigned i;
     for (i = 0; i < _w; ++i) {
+      printf("===== free T[%2d] =====\n", i);
       free_traverse_RBT(T[i]);
     }
   }

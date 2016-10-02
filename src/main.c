@@ -37,9 +37,12 @@ int main(int argc, char** argv)
     /* free_strlist(ptr); */
 
     /* make a Run-Based Trie */
-    exit(1);
+
     T = make_Run_Based_Trie_in_classbench_format(rulelist);
-  
+    do_simple_search(T, headerlist);
+    putchar('\n');
+
+    exit(1);  
     /* make a Pointed Run-Based Trie */
     PT = make_Pointed_Run_Based_Trie_in_classbench_format(rulelist);
     // traverse_PRBT(PT);

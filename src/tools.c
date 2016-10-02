@@ -100,10 +100,9 @@ str_list* range_to_01ms_sub(unsigned a, unsigned b, unsigned low, unsigned high)
   return NULL;
 }
 
-/* LOW (=0) and HIGH (=65535) are predefined in the tool.h */
-// str_list* range_to_01ms(unsigned a, unsigned b)
-/* a-b => 010101..10**, 111101..1111, ...
+/* LOW (=0) and HIGH (=65535) are predefined in the tool.h
 
+     a-b  => 010101..10**, 111101..1111, ...
 e.g. 3-17 => 0000000000000011,00000000000001**,0000000000001***,000000000001000*
    
 */
