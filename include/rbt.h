@@ -55,6 +55,7 @@ runlist* concat_runlist(runlist*, runlist*);
 void set_run_number(run* r, unsigned i);
 runlist* get_run_from_classbench_field(char*, unsigned*, unsigned);
 rbt** make_Run_Based_Trie_in_classbench_format(char**);
+runlist* delete_newline_element(runlist*);
 
 void free_traverse_RBT(rbt*);
 void free_RBT(rbt**);

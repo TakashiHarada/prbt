@@ -317,8 +317,6 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
     }
   }
 
-
-
   /* cut run from a rule and add it to an appropriate Trie */
   { 
     unsigned i, l, run_counter, sp;
@@ -355,7 +353,7 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
       }
       add_rule_number(runs, i+1);
       runs = delete_newline_element(runs);
-      add_terminal_mark(runs); // 最後の連が複数ある場合に対してデバッグが必要 20161002
+      add_terminal_mark(runs); // 最後の連に対応するものが複数ある場合（レンジフィールドが0,1,*にすると複数に分かれるもので，プロトコルとフラグの指定がないもの）に対してデバッグが必要 20161002
       ptr = runs;
       while (ptr != NULL) {
       	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);

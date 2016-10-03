@@ -182,7 +182,7 @@ void do_pointer_search(prbt* PT, char** headerlist)
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
-    //pointer_search(PT, headerlist[i], A);
+    // pointer_search(PT, headerlist[i], A);
     printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
@@ -294,7 +294,7 @@ unsigned classbench_sequential_search(rrule** rulelist, char* header, unsigned* 
     if (classbench_compare(rulelist[i], header, len, start))
       break;
 
-  printf("%s --> %3d\n", header, i+1);
+  // printf("%s --> %3d\n", header, i+1);
   return i+1;
 }
 

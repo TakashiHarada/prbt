@@ -290,3 +290,94 @@ void traverse_PRBT(prbt** PT)
     traverse_PT(PT[i]);
   }
 }
+
+prbt** make_Pointed_Run_Based_Trie_in_classbench_format(char** rulelist)
+{
+  _number_of_prbt_node = 0;
+  _number_of_run_of_prbt = 0;
+  prbt** PT = (prbt**)malloc(_w*sizeof(prbt));
+  /* make a root nodes PT[0], PT[1], ..., PT[w-1] 
+   * Caution! Pointed Run-Based Trie PT[i] starts from PT[0] not PT[1] */
+  {	unsigned i;
+    for (i = 0; i < _w; ++i) {
+      PT[i] = make_PRBT_node('_', "root", i);
+      ++_number_of_prbt_node;
+    }
+  }
+
+  /* at first, make a Run-Based Trie. This is a base of Pointed Run-Based Trie  */
+  {
+    unsigned i, l, run_counter, sp;
+    char copy[_capacity+1];
+    str_list *sl, *sl2, *it, *it2;
+    runlist *runs, *tmp, *ptr;
+    for (i = 0; i < _n; ++i) {
+      strcpy(copy,rulelist[i]);
+      sl = string_to_strings(copy);
+      it = sl;
+      run_counter = 0;
+      // printf("%s\n", rulelist[i]);
+      runs = NULL;
+      sp = 0;
+      while (NULL != it) {
+	// printf("%d %s\n", run_counter, it->elem);
+	l = strlen(it->elem);
+	if (in_hyphen(it->elem)) {
+	  it2 = sl2 = range_to_01ms(it->elem);
+	  while (NULL != it2) {
+	    tmp = get_run_from_classbench_field(it2->elem, &run_counter, sp);
+	    if (NULL != tmp && NULL != it2->next)
+	      --run_counter;
+	    runs = concat_runlist(runs, tmp);
+	    it2 = it2->next;
+	  }
+	  free_strlist(sl2);
+	  sp += BIT_LENGTH;
+	} else {
+	  runs = concat_runlist(runs, get_run_from_classbench_field(it->elem, &run_counter, sp));
+	  sp += l;
+	}
+	it = it->next;
+      }
+      add_rule_number(runs, i+1);
+      runs = delete_newline_element(runs);
+      add_terminal_mark(runs); 
+      ptr = runs;
+      while (ptr != NULL) {
+      	traverse_and_make_backbone_PRBT(PT[ptr->run.trie_number-1], ptr->run);
+      	/* if (ptr->run.terminal) */
+      	/*   printf("[str = %32s i = %3d rule = %3d run = %2d  true]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
+      	/* else */
+      	/*   printf("[str = %32s i = %3d rule = %3d run = %2d false]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
+      	ptr = ptr->next;
+      }
+      free_runlist(runs);
+      free_strlist(sl);
+      // putchar('\n');
+    }
+  }
+
+  /* set all nodes to have a left child and right child */
+  { unsigned i;
+    prbt* pi;
+    prbt* pj;
+    /* if a root node of PT[i] does not have left of right or both childs, 
+     * then each pointers of root of PT[i] points to root of PT[j] */
+    for (i = 0; i < _w-1; ++i) { // PT[w-1] needs not to have both pointers.
+      pi = PT[i];
+      pj = PT[i+1];
+      make_pointer_from_PTi_to_PTj(pi, pj);   // PT_(j) means PT_(i+1)
+    }
+
+    prbt* high_trie;
+    for (i = _w-2; ; --i) { // start from PT[w-2]
+      high_trie = PT[i];
+      lower_trie_traverse_via_label_of_runs_on_higher_trie(high_trie, PT);
+      if (i == 0) { break; }
+    }
+  }
+  printf("A number of Nodes of PRBT = %d\n", _number_of_prbt_node);
+  printf("A number of Runs  of PRBT = %d\n\n", _number_of_run_of_prbt);
+
+  return PT;
+}

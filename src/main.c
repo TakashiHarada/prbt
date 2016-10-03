@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     T = make_Run_Based_Trie_in_classbench_format(rulelist);
 
     /* make a Pointed Run-Based Trie */
-    // PT = make_Pointed_Run_Based_Trie_in_classbench_format(rulelist);
+    PT = make_Pointed_Run_Based_Trie_in_classbench_format(rulelist);
     // traverse_PRBT(PT);
 
   } else if (argc == 3) {
@@ -73,8 +73,8 @@ int main(int argc, char** argv)
   putchar('\n');
   do_simple_search(T, headerlist);
   putchar('\n');
-  //do_pointer_search(PT[0], headerlist);
-  //putchar('\n');
+  do_pointer_search(PT[0], headerlist);
+  putchar('\n');
 
   /* from here ========== freeing memories ========== */ 
   {	
