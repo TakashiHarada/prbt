@@ -16,7 +16,7 @@ char* delete_space(char* h)
   }
   header[_w] = '\0';
   // printf("%s\n", header);
-  free(h);
+  free(h), h = NULL;
   return header;
 }
 
@@ -37,7 +37,7 @@ unsigned get_header_length_in_classbench_format(char* header)
   }
   --w; // for '\n'
 
-  free(copy);
+  free(copy), copy = NULL;
 
   return w;
 }
@@ -124,7 +124,7 @@ unsigned get_rule_length_in_bitstring_format(char* rule)
   }
   // printf("w = %d\n", w);
 
-  free(copy);
+  free(copy), copy = NULL;
   return w;
 }
 
@@ -154,8 +154,9 @@ char** read_classbench_rule_list(char* rule_file_name)
     printf("w = %d\n", w);
     printf("n = %d\n", n);
   */
+  if (w > _w)  _capacity = w;
+  else _capacity = _w;
 
-  _capacity = w;
   /* allocate memory and make rulelist */
   char** rulelist = (char**)malloc(n*sizeof(char*));
   rewind(fp);

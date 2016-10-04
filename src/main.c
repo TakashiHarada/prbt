@@ -82,21 +82,23 @@ int main(int argc, char** argv)
     for (i = 0; i < _n; ++i) {
       // printf("%s\n",rulelist[i]);
       free(rulelist[i]);
+      rulelist[i] = NULL;
     }
 
     for (i = 0; i < _hn; ++i) {
       //printf("%s\n", headerlist[i]);
       free(headerlist[i]);
+      headerlist[i] = NULL;
     }
   }
 
-  free(rulelist);
-  free(headerlist);
+  free(rulelist), rulelist = NULL;
+  free(headerlist), headerlist = NULL;
   
   free_RBT(T);
-  free(T);
+  free(T), T = NULL;
   free_PRBT(PT);
-  free(PT);
+  free(PT), PT = NULL;
   /* ========== freeing memories ========== ----> to here*/ 
   
   return 0;

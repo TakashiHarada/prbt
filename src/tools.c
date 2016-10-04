@@ -18,7 +18,7 @@ str_list* delete_newline_strlist(str_list* sl)
   if (!strcmp("\n", sl->elem)) {
     it = sl;
     sl = sl->next;
-    free(it);
+    free(it), it = NULL;
     return sl;
   }
   
@@ -29,7 +29,7 @@ str_list* delete_newline_strlist(str_list* sl)
     if (NULL != it) {
       if(!strcmp("\n", it->elem)) {
 	it2->next = it->next;
-	free(it);
+	free(it), it = NULL;
       }
     }
   }
@@ -42,7 +42,7 @@ str_list* delete_strlist_element(str_list* strings, str_list* deleted)
   str_list *it, *it2;
   if (strings == deleted) {
     it = strings->next;
-    free(strings);
+    free(strings), strings = NULL;
     return it;
   }
 
@@ -51,8 +51,8 @@ str_list* delete_strlist_element(str_list* strings, str_list* deleted)
     it2 = it;
     if (it == deleted) {
       it2->next = it->next;
-      //free(it->elem);
-      //free(it);
+      free(it->elem), it->elem = NULL;
+      free(it), it = NULL;
       break;
     }
     it = it->next;
@@ -87,7 +87,8 @@ str_list* string_to_strings(char* rule)
       strings = concat_strlist(strings,new_strlist(f));
     }
   }
-  free(copy);
+  /* if (NULL != copy) */
+  /*   free(copy), copy = NULL; */
   return strings;
 }
 
@@ -190,7 +191,8 @@ void free_strlist(str_list* sl)
   while (NULL != it) {
     tmp = it;
     it = it->next;
-    free(tmp->elem);
-    free(tmp);
+    if (NULL != tmp->elem) 
+      free(tmp->elem), tmp->elem = NULL;
+    free(tmp), tmp = NULL;
   }
 }

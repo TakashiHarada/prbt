@@ -20,6 +20,7 @@ This file is part of Grouper.
 */
 
 // Grouper を実装したソースから取ってきたもの．ルール生成．
+/* change '?' to '*' */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,10 +53,11 @@ int main(int argc, char ** argv)
         srand(seed.tv_sec * seed.tv_usec);
         
         FILE * outfile = fopen(filename, "w");
-        //fprintf(outfile, "%ld\n", bits);
+        fprintf(outfile, "%ld\n", bits);
         int i,j;
         int random_rule;
         for(i = 0; i < rules; i ++){
+	        int mask_count = 0;  /* ある一つのポリシーのマスクの数を数える*/
                 for(j = 0; j < bits; j++){
                         random_rule = (int)((3.0 * rand()) / (RAND_MAX + 1.0));
                         switch(random_rule){
@@ -65,15 +67,25 @@ int main(int argc, char ** argv)
                         case 1:
                                 fputc('1', outfile);
                                 break;
-                        case 2:
+                        case 2: 
                                 fputc('*', outfile);
+				mask_count++;
                                 break;
                         default:
                                 fputc((char)48 + random_rule, outfile);
                         }
-                }
-                /* Add the newline */
-                fputc('\n', outfile);
+		}
+		/* ポリシーの全てがマスク(デフォルトルール)とはなっていない(問題が無いルール). */
+		/* Add the newline */
+		if (mask_count != bits) {  
+		    fputc('\n', outfile);
+		}
+		/* ルールがデフォルトルールになってしまっているのでやり直す.*/
+		else { 
+		    fseek(outfile, -j, 1);
+		    i--;
+		}
+		
         }
         fclose(outfile);
         return EXIT_SUCCESS;

@@ -104,7 +104,7 @@ void low_trie_traverse(prbt* high, prbt** PT)
     }
   }
 
-  free(bit_string);
+  free(bit_string), bit_string = NULL;
 }
 
 void lower_trie_traverse_via_label_of_runs_on_higher_trie(prbt* high, prbt** PT)
@@ -127,6 +127,8 @@ void traverse_and_make_backbone_PRBT(prbt* PT, run r)
 {
   unsigned l = strlen(r.run);
   unsigned k = r.trie_number-1;  // trie_number starts from 0 not 1 
+  if (k >= _w)
+    return;
   char* buf = (char*)malloc((l+1)*sizeof(char));
   char* bit_string = (char*)malloc((l+1)*sizeof(char));
   strcpy(bit_string, r.run);
@@ -159,8 +161,8 @@ void traverse_and_make_backbone_PRBT(prbt* PT, run r)
   ptr->rs = add_run_to_RBT_node(ptr->rs, r); // add_run_to_RBT_node can be used to PRBT node.
   ++_number_of_run_of_prbt;
 
-  free(bit_string);
-  free(buf);
+  free(bit_string), bit_string = NULL;
+  free(buf), buf = NULL;
 }
 
 prbt* make_PRBT_node(char b, char* str, unsigned tn)
@@ -209,7 +211,7 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
 	traverse_and_make_backbone_PRBT(PT[ptr->run.trie_number-1], ptr->run);
 	ptr = ptr->next;
       }
-      free_runlist(runs);
+      free_runlist(runs), runs = NULL;
     }
   }
 
@@ -245,9 +247,9 @@ void free_traverse_PRBT(prbt* PT)
   free_traverse_PRBT(PT->right);
 
   if (NULL != PT->rs) { free_runlist(PT->rs); }
-  if (NULL != PT->label) { free(PT->label); }
-  if (NULL != PT->left) { free(PT->left); }
-  if (NULL != PT->right) { free(PT->right); }
+  if (NULL != PT->label) { free(PT->label), PT->label = NULL; }
+  if (NULL != PT->left) { free(PT->left), PT->left = NULL; }
+  if (NULL != PT->right) { free(PT->right), PT->right = NULL; }
 }
 
 void free_PRBT(prbt** PT)
@@ -339,9 +341,12 @@ prbt** make_Pointed_Run_Based_Trie_in_classbench_format(char** rulelist)
 	}
 	it = it->next;
       }
-      add_rule_number(runs, i+1);
-      runs = delete_newline_element(runs);
-      add_terminal_mark(runs); 
+
+      if (NULL != runs) {
+	add_rule_number(runs, i+1);
+	runs = delete_newline_element(runs);
+	add_terminal_mark(runs); 
+      }
       ptr = runs;
       while (ptr != NULL) {
       	traverse_and_make_backbone_PRBT(PT[ptr->run.trie_number-1], ptr->run);

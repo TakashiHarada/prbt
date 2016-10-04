@@ -10,7 +10,7 @@ void free_runlist(runlist* rl)
   while (ptr != NULL) {
     wptr = ptr;
     ptr = ptr->next;
-    free(wptr);
+    free(wptr), wptr = NULL;
   }
 }
 
@@ -80,7 +80,7 @@ void traverse_and_make_RBT_node(rbt* T, run r)
   //ptr->head = add_run_to_RBT_node(ptr->head, ptr->tail, r);
   ptr->rs = add_run_to_RBT_node(ptr->rs, r);
 
-  free(bit_string);
+  free(bit_string), bit_string = NULL;
 }
 
 void add_rule_number(runlist* rs, unsigned i)
@@ -159,7 +159,7 @@ runlist* cut_run(char* rule)
       rs = add_run(rs, buf, run_counter, s);
       // printf("%s ", buf);
     }
-    free(buf);
+    free(buf), buf = NULL;
   }
   add_terminal_mark(rs);
   return rs;
@@ -187,11 +187,12 @@ rbt** make_Run_Based_Trie(char** rulelist)
       runlist* ptr = runs;
       while (ptr != NULL) {
 	// printf("[str = %4s i = %d rule = %2d run = %d ] ", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num);
-	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+	if (ptr->run.trie_number-1 < _w)
+	  traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
 	ptr = ptr->next;
       }
       //putchar('\n');
-      free_runlist(runs);
+      free_runlist(runs), runs = NULL;
     }
   }
 
@@ -206,7 +207,7 @@ runlist* delete_newline_element(runlist* runs)
   if (!strcmp("\n",runs->run.run)) {
     it = runs;
     runs = runs->next;
-    free(it);
+    free(it), it = NULL;
     return runs;
   }
 
@@ -217,7 +218,7 @@ runlist* delete_newline_element(runlist* runs)
     if (NULL != it) {
       if (!strcmp("\n",it->run.run)) {
 	it2->next = it->next;
-	//free(it);
+	free(it), it = NULL;
       }
     }
   }
@@ -298,7 +299,7 @@ runlist* get_run_from_classbench_field(char* field, unsigned* run_counter, unsig
     rs = add_run(rs, buf, (*run_counter), s+run_start_point);
     // printf("%s (%d)", buf, s+run_start_point-1);
   }
-  free(buf);
+  free(buf), buf = NULL;
   // putchar('\n');
 
   return rs;
@@ -308,6 +309,7 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
 {
   _number_of_rbt_node = 0;
   rbt** T = (rbt**)malloc(_w*sizeof(rbt*));
+
   /* make a root nodes T[0], T[1], ..., T[w-1] */
   {	
     unsigned i;
@@ -320,15 +322,18 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
   /* cut run from a rule and add it to an appropriate Trie */
   { 
     unsigned i, l, run_counter, sp;
-    char copy[_capacity+1];
+    char* copy = (char*)calloc(_capacity,sizeof(char));;
     str_list *sl, *sl2, *it, *it2;
     runlist *runs, *tmp, *ptr;
     for (i = 0; i < _n; ++i) {
-      strcpy(copy,rulelist[i]);
+      strcpy(copy, rulelist[i]);
+      // printf("R[%d] = %s", i, copy);
       sl = string_to_strings(copy);
+      if (NULL != sl) {
+	sl = delete_newline_strlist(sl);
+      }
       it = sl;
       run_counter = 0;
-      // printf("%s\n", rulelist[i]);
       runs = NULL;
       sp = 0;
       while (NULL != it) {
@@ -343,7 +348,7 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
 	    runs = concat_runlist(runs, tmp);
 	    it2 = it2->next;
 	  }
-	  free_strlist(sl2);
+	  free_strlist(sl2), sl2 = NULL;
 	  sp += BIT_LENGTH;
 	} else {
 	  runs = concat_runlist(runs, get_run_from_classbench_field(it->elem, &run_counter, sp));
@@ -351,24 +356,28 @@ rbt** make_Run_Based_Trie_in_classbench_format(char** rulelist)
 	}
 	it = it->next;
       }
-      add_rule_number(runs, i+1);
-      runs = delete_newline_element(runs);
-      add_terminal_mark(runs); // 最後の連に対応するものが複数ある場合（レンジフィールドが0,1,*にすると複数に分かれるもので，プロトコルとフラグの指定がないもの）に対してデバッグが必要 20161002
+      if (NULL != runs) {
+	add_rule_number(runs, i+1);
+	runs = delete_newline_element(runs);
+	add_terminal_mark(runs); // 最後の連に対応するものが複数ある場合（レンジフィールドが0,1,*にすると複数に分かれるもので，プロトコルとフラグの指定がないもの）に対してデバッグが必要 20161002
+      }
       ptr = runs;
       while (ptr != NULL) {
-      	traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
+	if (ptr->run.trie_number-1 < _w) 
+	  traverse_and_make_RBT_node(T[ptr->run.trie_number-1], ptr->run);
       	/* if (ptr->run.terminal) */
       	/*   printf("[str = %32s i = %3d rule = %3d run = %2d  true]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
       	/* else */
       	/*   printf("[str = %32s i = %3d rule = %3d run = %2d false]\n", ptr->run.run, ptr->run.trie_number, ptr->run.rule_num, ptr->run.run_num); */
       	ptr = ptr->next;
       }
-      free_runlist(runs);
-      free_strlist(sl);
+      free_runlist(runs), runs = NULL;
+      free_strlist(sl), sl = NULL;
       // putchar('\n');
     }
+    free(copy), copy = NULL;
   }
-
+  
   printf("A number of Nodes of RBT = %d\n", _number_of_rbt_node);
   printf("A number of Runs  of RBT = %d\n\n", _number_of_run_of_rbt);
   return T;
@@ -387,14 +396,14 @@ void free_traverse_RBT(rbt* T)
       // printf("free run (%s, %2d, %d)\n", ptr->run.run, ptr->run.rule_num, ptr->run.run_num);
       ptr2 = ptr;
       ptr = ptr->next;
-      free(ptr2);
+      free(ptr2), ptr2 = NULL;
     }
   }
 
   if (NULL != T->left)
-    free(T->left);
+    free(T->left), T->left = NULL;
   if (NULL != T->right)
-    free(T->right);
+    free(T->right), T->right = NULL;
 }
 
 void free_RBT(rbt** T)
