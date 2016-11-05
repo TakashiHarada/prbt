@@ -114,8 +114,8 @@ void do_simple_search(rbt** T, char** headerlist)
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
-    // simple_search(T, headerlist[i], A);
-    printf("%s --> %3d\n", headerlist[i], simple_search(T, headerlist[i], A));
+    simple_search(T, headerlist[i], A);
+    // printf("%s --> %3d\n", headerlist[i], simple_search(T, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   // printf("===========================================================\n");
@@ -182,8 +182,8 @@ void do_pointer_search(prbt* PT, char** headerlist)
   gettimeofday(&start_time, NULL);
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
-    // pointer_search(PT, headerlist[i], A);
-    printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
+    pointer_search(PT, headerlist[i], A);
+    // printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   // printf("===========================================================\n");

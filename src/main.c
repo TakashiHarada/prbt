@@ -62,6 +62,9 @@ int main(int argc, char** argv)
     /* make a Pointed Run-Based Trie */
     PT = make_Pointed_Run_Based_Trie(rulelist);
     // traverse_PRBT(PT);
+
+    /* make column switched rule Pointed Run-Based Trie */
+    make_column_switched_Pointed_Run_Based_Trie(rulelist);
   } else {
     fprintf(stderr, "Usage: $./main <rule list> <pseudo packets>\n");
     exit(1);
