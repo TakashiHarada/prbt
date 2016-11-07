@@ -8,6 +8,7 @@ int main(int argc, char** argv)
   char** headerlist = NULL;
   rbt** T = NULL;
   prbt** PT = NULL;
+  csprbt* CSPT = NULL;
   bool classbench_flag = false;
 
   /* check arguments */
@@ -64,7 +65,8 @@ int main(int argc, char** argv)
     // traverse_PRBT(PT);
 
     /* make column switched rule Pointed Run-Based Trie */
-    make_column_switched_Pointed_Run_Based_Trie(rulelist);
+    CSPT = make_column_switched_Pointed_Run_Based_Trie(rulelist);
+
   } else {
     fprintf(stderr, "Usage: $./main <rule list> <pseudo packets>\n");
     exit(1);
@@ -77,6 +79,8 @@ int main(int argc, char** argv)
   do_simple_search(T, headerlist);
   putchar('\n');
   do_pointer_search(PT[0], headerlist);
+  putchar('\n');
+  do_csprbt_search(CSPT, headerlist);
   putchar('\n');
 
   /* from here ========== freeing memories ========== */ 

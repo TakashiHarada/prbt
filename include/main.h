@@ -19,6 +19,10 @@
 #include <rbt.h>
 #endif
 
+#ifndef __PRBT_COLUMN_SWITCHING_H__
+#include <column_switching.h>
+#endif
+
 #ifndef __PRBT_CLASSIFY_H__
 #include <classify.h>
 #endif

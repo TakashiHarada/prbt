@@ -45,6 +45,7 @@ void lower_trie_traverse_via_label_of_runs_on_higer_trie(prbt*, prbt**);
 void traverse_and_make_backbone_PRBT(prbt*, run);
 prbt* make_PRBT_node(char, char*, unsigned);
 prbt** make_Pointed_Run_Based_Trie(char**);
+prbt** make_Pointed_Run_Based_Trie_n(char**, unsigned);
 
 prbt** make_Pointed_Run_Based_Trie_in_classbench_format(char**);
 

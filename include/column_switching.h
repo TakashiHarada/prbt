@@ -23,6 +23,16 @@
 #include <prbt.h>
 #endif
 
-char*** devide_rulelist_to_2rulelists(char**);
+struct column_switched_Pointed_Run_Based_Trie {
+  unsigned** P; // for permutation of each rulelist
+  prbt*** PRBTs;
+};
+typedef struct column_switched_Pointed_Run_Based_Trie csprbt;
 
+void column_switching2rules(char**, unsigned*);
+unsigned** column_switching(char***);
+char*** devide_rulelist_to_2rulelists(char**);
+csprbt* make_column_switched_Pointed_Run_Based_Trie(char **);
+void free2rulelists(char***);
+void free_permutation(unsigned**);
 #endif

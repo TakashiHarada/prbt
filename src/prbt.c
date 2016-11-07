@@ -238,6 +238,62 @@ prbt** make_Pointed_Run_Based_Trie(char** rulelist)
   return PT;
 }
 
+prbt** make_Pointed_Run_Based_Trie_n(char** rulelist, unsigned n)
+{
+  /* _number_of_prbt_node = 0; */
+  /* _number_of_run_of_prbt = 0; */
+  prbt** PT = (prbt**)malloc(_w*sizeof(prbt));
+  /* make a root nodes PT[0], PT[1], ..., PT[w-1] 
+   * Caution! Pointed Run-Based Trie PT[i] starts from PT[0] not PT[1] */
+  {	unsigned i;
+    for (i = 0; i < _w; ++i) {
+      PT[i] = make_PRBT_node('_', "root", i);
+      ++_number_of_prbt_node;
+    }
+  }
+
+  /* at first, make a Run-Based Trie. This is a base of Pointed Run-Based Trie  */
+  {	
+    unsigned i;
+    char copy[_w+1];
+    for (i = 0; i < n; ++i) {
+      strcpy(copy, rulelist[i]);
+      runlist* runs = cut_run(copy);
+      add_rule_number(runs, i+1);
+      runlist* ptr = runs;
+      while (ptr != NULL) {
+	traverse_and_make_backbone_PRBT(PT[ptr->run.trie_number-1], ptr->run);
+	ptr = ptr->next;
+      }
+      free_runlist(runs);
+    }
+  }
+
+  /* set all nodes to have a left child and right child */
+  { unsigned i;
+    prbt* pi;
+    prbt* pj;
+    /* if a root node of PT[i] does not have left of right or both childs, 
+     * then each pointers of root of PT[i] points to root of PT[j] */
+    for (i = 0; i < _w-1; ++i) { // PT[w-1] needs not to have both pointers.
+      pi = PT[i];
+      pj = PT[i+1];
+      make_pointer_from_PTi_to_PTj(pi, pj);   // PT_(j) means PT_(i+1)
+    }
+
+    prbt* high_trie;
+    for (i = _w-2; ; --i) { // start from PT[w-2]
+      high_trie = PT[i];
+      lower_trie_traverse_via_label_of_runs_on_higher_trie(high_trie, PT);
+      if (i == 0) { break; }
+    }
+  }
+  printf("A number of Nodes of PRBT = %d\n", _number_of_prbt_node);
+  printf("A number of Runs  of PRBT = %d\n\n", _number_of_run_of_prbt);
+
+  return PT;
+}
+
 void free_traverse_PRBT(prbt* PT)
 {
   if (NULL == PT) { return; }

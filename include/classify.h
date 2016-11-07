@@ -23,6 +23,10 @@
 #include <prbt.h>
 #endif
 
+#ifndef __PRBT_COLUMN_SWITCHING_H__
+#include <column_switching.h>
+#endif
+
 #include <time.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -41,9 +45,11 @@ unsigned long _is_last_run_rbt;
 
 unsigned count_run_number(char*);
 void count_run_number_on_rule_in_rulelist(char**, unsigned*);
+unsigned csprbt_search(csprbt*, char*);
 unsigned pointer_search(prbt*, char*, unsigned*);
 unsigned simple_search(rbt**, char*, unsigned*);
 unsigned sequential_search(char **, char*);
+void do_csprbt_search(csprbt*, char**);
 void do_pointer_search(prbt*, char**);
 void do_simple_search(rbt**, char**);
 void do_sequential_search(char **, char**);

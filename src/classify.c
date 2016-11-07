@@ -22,7 +22,7 @@ unsigned sequential_search(char** rulelist, char* header)
       break;
     }
 
-  // printf("%s --> %2d\n", header, i+1);
+  //printf("%s --> %2d\n", header, i+1);
   return i+1;
   
   /* char defaultrule[_w+1]; */
@@ -183,7 +183,7 @@ void do_pointer_search(prbt* PT, char** headerlist)
   for (i = 0; i < _hn; ++i) {
     memset(A+1, 0, _n*sizeof(unsigned));
     pointer_search(PT, headerlist[i], A);
-    // printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
+    //printf("%s --> %3d\n", headerlist[i], pointer_search(PT, headerlist[i], A));
   }
   gettimeofday(&end_time, NULL);
   // printf("===========================================================\n");
@@ -195,6 +195,74 @@ void do_pointer_search(prbt* PT, char** headerlist)
   printf("Last Run? : %ld\n", _is_last_run_prbt);
   printf("Candidate : %ld\n", _cand_prbt);
   printf("Total     : %ld\n", _trav_prbt + _arr_prbt + _is_last_run_prbt + _cand_prbt);
+}
+
+unsigned csprbt_search(csprbt* CSPT, char* header)
+{
+  unsigned candidate = _n+1;
+  unsigned i, j, n = (_n+1)/2;
+  unsigned* S;
+
+  prbt** PT;
+  prbt* ptr;
+
+  for (i = 0; i < n; ++i) {
+      PT = CSPT->PRBTs[i];
+      S = CSPT->P[i];
+      /* unsigned k; */
+      /* printf("S[%d] : ",i); */
+      /* for (k = 0; k < _w; ++k) */
+      /* 	printf("%d ", S[k]); */
+      /* putchar('\n'); */
+      ptr = PT[0];
+
+      for (j = 0; j < _w; ++j) {
+	//putchar(header[S[j]-1]);
+      	if ('0' == header[S[j]-1]) {
+      	  if (NULL != ptr->pleft) { ptr = ptr->pleft; }
+      	  else { break; }
+      	}
+      	else {
+      	  if (NULL != ptr->pright) { ptr = ptr->pright; }
+      	  else { break; }
+      	}
+	if (NULL != ptr->rs) {
+	  candidate = (ptr->rs)->run.rule_num + 2*i;
+	  //printf("%s, %d, %d\n",header, i, candidate);
+	}
+      }
+      //putchar('\n');
+      if (candidate != _n+1)
+      	return candidate;
+  }
+
+  return candidate;
+}
+
+void do_csprbt_search(csprbt* CSPT, char** headerlist)
+{
+  struct timeval start_time, end_time;
+  double sec_time_of_day;
+  unsigned i;
+  printf("==============         CSPRBT Search         ==============\n");
+
+  _trav_prbt = _arr_prbt = _cand_prbt = _is_last_run_prbt = 0;
+
+  gettimeofday(&start_time, NULL);
+  for (i = 0; i < _hn; ++i) {
+    csprbt_search(CSPT, headerlist[i]);
+    //printf("%s --> %3d\n", headerlist[i], csprbt_search(CSPT, headerlist[i]));
+  }
+  gettimeofday(&end_time, NULL);
+  // printf("===========================================================\n");
+  sec_time_of_day = (end_time.tv_sec - start_time.tv_sec) 
+    + (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
+  printf("Search Time : %f\n", sec_time_of_day);
+  /* printf("Traverse  : %ld\n", _trav_prbt); */
+  /* printf("Array     : %ld\n", _arr_prbt); */
+  /* printf("Last Run? : %ld\n", _is_last_run_prbt); */
+  /* printf("Candidate : %ld\n", _cand_prbt); */
+  /* printf("Total     : %ld\n", _trav_prbt + _arr_prbt + _is_last_run_prbt + _cand_prbt); */
 }
 
 unsigned count_run_number(char*rule)
